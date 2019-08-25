@@ -39,10 +39,12 @@ services:
       - ./build:/mapping
       - cache:/cache
   import-osmborder:
-    image: "openmaptiles/import-osmborder:${TOOLS_VERSION}"
+    image: "openmaptiles/import-osmborder:0.4-disputed_claim"
     env_file: .env
     networks:
       - postgres_conn
+    volumes:
+      - ./data:/import
   import-osm-diff:
     image: "openmaptiles/import-osm:${TOOLS_VERSION}"
     env_file: .env
