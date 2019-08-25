@@ -18,6 +18,12 @@ layer:
       description: |
           Mark with `1` if the border is disputed.
       values: [0, 1]
+    disputed_by:
+      description: |
+          List of semicolons separated country codes not recognizing this boundary.
+    claimed_by:
+      description: |
+          List of semicolons separated country codes claiming this boundary.
     maritime:
       description: |
           Mark with `1` if it is a maritime border.
@@ -25,6 +31,6 @@ layer:
   buffer_size: 4
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, admin_level, disputed, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime FROM layer_boundary(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./boundary.sql
