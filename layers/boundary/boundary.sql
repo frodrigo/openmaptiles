@@ -1,134 +1,146 @@
 
 
--- etldoc: ne_110m_admin_0_boundary_lines_land  -> boundary_z0
-
 CREATE OR REPLACE VIEW boundary_z0 AS (
     SELECT geometry,
-        2 AS admin_level,
-        (CASE WHEN featurecla LIKE 'Disputed%' THEN true ELSE false END) AS disputed,
-        false AS maritime
-    FROM ne_110m_admin_0_boundary_lines_land
+        admin_level,
+        neutral,
+        disputed,
+        disputed_by,
+        claimed_by,
+        maritime
+    FROM osm_border_linestring_gen9
+    WHERE admin_level <= 2
 );
-
--- etldoc: ne_50m_admin_0_boundary_lines_land  -> boundary_z1
--- etldoc: ne_50m_admin_1_states_provinces_lines -> boundary_z1
-
 CREATE OR REPLACE VIEW boundary_z1 AS (
     SELECT geometry,
-        2 AS admin_level,
-        (CASE WHEN featurecla LIKE 'Disputed%' THEN true ELSE false END) AS disputed,
-        false AS maritime
-    FROM ne_50m_admin_0_boundary_lines_land
-    UNION ALL
-    SELECT geometry, 4 AS admin_level, false AS disputed, false AS maritime
-    FROM ne_50m_admin_1_states_provinces_lines
+        admin_level,
+        neutral,
+        disputed,
+        disputed_by,
+        claimed_by,
+        maritime
+    FROM osm_border_linestring_gen9
+    WHERE admin_level <= 2
 );
-
-
--- etldoc: ne_50m_admin_0_boundary_lines_land -> boundary_z3
--- etldoc: ne_50m_admin_1_states_provinces_lines -> boundary_z3
-
+CREATE OR REPLACE VIEW boundary_z2 AS (
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
+    FROM osm_border_linestring_gen9
+    WHERE admin_level <= 2
+);
 CREATE OR REPLACE VIEW boundary_z3 AS (
     SELECT geometry,
-        2 AS admin_level,
-        (CASE WHEN featurecla LIKE 'Disputed%' THEN true ELSE false END) AS disputed,
-        false AS maritime
-    FROM ne_50m_admin_0_boundary_lines_land
-    UNION ALL
-    SELECT geometry, 4 AS admin_level, false AS disputed, false AS maritime
-    FROM ne_50m_admin_1_states_provinces_lines
+        admin_level,
+        neutral,
+        disputed,
+        disputed_by,
+        claimed_by,
+        maritime
+    FROM osm_border_linestring_gen9
+    WHERE admin_level <= 2
 );
-
-
--- etldoc: ne_10m_admin_0_boundary_lines_land -> boundary_z4
--- etldoc: ne_10m_admin_1_states_provinces_lines -> boundary_z4
--- etldoc: osm_border_linestring_gen10 -> boundary_z4
-
 CREATE OR REPLACE VIEW boundary_z4 AS (
     SELECT geometry,
-        2 AS admin_level,
-        (CASE WHEN featurecla LIKE 'Disputed%' THEN true ELSE false END) AS disputed,
-        false AS maritime
-    FROM ne_10m_admin_0_boundary_lines_land
-    WHERE featurecla <> 'Lease limit'
-    UNION ALL
-    SELECT geometry, 4 AS admin_level, false AS disputed, false AS maritime
-    FROM ne_10m_admin_1_states_provinces_lines
-    WHERE min_zoom <= 5
-    UNION ALL
-    SELECT geometry, admin_level, disputed, maritime
-    FROM osm_border_linestring_gen10
-    WHERE maritime=true AND admin_level <= 2
+        admin_level,
+        neutral,
+        disputed,
+        disputed_by,
+        claimed_by,
+        maritime
+    FROM osm_border_linestring_gen9
+    WHERE admin_level <= 2
 );
+
 
 -- etldoc: osm_border_linestring_gen9 -> boundary_z5
 
 CREATE OR REPLACE VIEW boundary_z5 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen9
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen8 -> boundary_z6
 CREATE OR REPLACE VIEW boundary_z6 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen8
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen7 -> boundary_z7
 CREATE OR REPLACE VIEW boundary_z7 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen7
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen6 -> boundary_z8
 CREATE OR REPLACE VIEW boundary_z8 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen6
     WHERE admin_level <= 4
 );
 
 -- etldoc: osm_border_linestring_gen5 -> boundary_z9
 CREATE OR REPLACE VIEW boundary_z9 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen5
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen4 -> boundary_z10
 CREATE OR REPLACE VIEW boundary_z10 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen4
     WHERE admin_level <= 6
 );
 
 -- etldoc: osm_border_linestring_gen3 -> boundary_z11
 CREATE OR REPLACE VIEW boundary_z11 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen3
     WHERE admin_level <= 8
 );
 
 -- etldoc: osm_border_linestring_gen2 -> boundary_z12
 CREATE OR REPLACE VIEW boundary_z12 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen2
 );
 
 -- etldoc: osm_border_linestring_gen1 -> boundary_z13
 CREATE OR REPLACE VIEW boundary_z13 AS (
-    SELECT geometry, admin_level, disputed, maritime
+    SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen1
 );
+
+CREATE OR REPLACE FUNCTION layer_boundary_disputed (disputed varchar[])
+RETURNS bigint AS $$
+DECLARE
+   s bigint := 0;
+BEGIN
+   s = s + CASE WHEN 'MA' = ANY(disputed) THEN 2^0 ELSE 0 END; -- Morocco
+   s = s + CASE WHEN 'EH' = ANY(disputed) THEN 2^1 ELSE 0 END; -- Western Sahara
+   s = s + CASE WHEN 'RS' = ANY(disputed) THEN 2^2 ELSE 0 END; -- Serbia
+   s = s + CASE WHEN 'XK' = ANY(disputed) THEN 2^3 ELSE 0 END; -- Kosovo
+   s = s + CASE WHEN 'RU' = ANY(disputed) THEN 2^4 ELSE 0 END; -- Russia
+   s = s + CASE WHEN 'UA' = ANY(disputed) THEN 2^5 ELSE 0 END; -- Ukraine
+   s = s + CASE WHEN 'CN' = ANY(disputed) THEN 2^6 ELSE 0 END; -- China
+   s = s + CASE WHEN 'IN' = ANY(disputed) THEN 2^7 ELSE 0 END; -- India
+   s = s + CASE WHEN 'PK' = ANY(disputed) THEN 2^8 ELSE 0 END; -- Pakistan
+   s = s + CASE WHEN 'BT' = ANY(disputed) THEN 2^9 ELSE 0 END; -- Bhutan
+   s = s + CASE WHEN 'SD' = ANY(disputed) THEN 2^10 ELSE 0 END; -- Sudan
+   s = s + CASE WHEN 'SS' = ANY(disputed) THEN 2^11 ELSE 0 END; -- South Sudan
+   RETURN s;
+END;
+$$ LANGUAGE PLPGSQL IMMUTABLE;
+
 
 -- etldoc: layer_boundary[shape=record fillcolor=lightpink, style="rounded,filled",
 -- etldoc:     label="<sql> layer_boundary |<z0> z0 |<z1_2> z1_2 | <z3> z3 | <z4> z4 | <z5> z5 | <z6> z6 | <z7> z7 | <z8> z8 | <z9> z9 |<z10> z10 |<z11> z11 |<z12> z12|<z13> z13+"]
 
 CREATE OR REPLACE FUNCTION layer_boundary (bbox geometry, zoom_level int)
-RETURNS TABLE(geometry geometry, admin_level int, disputed int, maritime int) AS $$
-    SELECT geometry, admin_level, disputed::int, maritime::int FROM (
+RETURNS TABLE(geometry geometry, admin_level int, neutral int, disputed int, disputed_by bigint, claimed_by bigint, maritime int) AS $$
+    SELECT geometry, admin_level, neutral::int, disputed::int, layer_boundary_disputed(disputed_by), layer_boundary_disputed(claimed_by), maritime::int FROM (
         -- etldoc: boundary_z0 ->  layer_boundary:z0
         SELECT * FROM boundary_z0 WHERE geometry && bbox AND zoom_level = 0
         UNION ALL
