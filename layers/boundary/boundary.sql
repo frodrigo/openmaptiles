@@ -47,7 +47,7 @@ CREATE OR REPLACE VIEW boundary_z4 AS (
         claimed_by,
         maritime
     FROM osm_border_linestring_gen9
-    WHERE admin_level <= 2
+    WHERE admin_level <= 4
 );
 
 
