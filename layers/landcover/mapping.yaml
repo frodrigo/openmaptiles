@@ -63,6 +63,9 @@ tables:
     - name: wetland
       key: wetland
       type: string
+    - name: leaf_type
+      key: leaf_type
+      type: string
     - name: area
       type: area
     - name: webmerc_area
@@ -106,4 +109,9 @@ tables:
       - tidalflat
       - saltmarsh
       - mangrove
+      leaf_type:
+      - broadleaved
+      - needleleaved
+      - mixed
+      - leafless
     type: polygon
