@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS simplify_vw_z13 CASCADE;
 CREATE TABLE simplify_vw_z13 AS
 (
     SELECT subclass,
+           leaf_type,
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(13),2)),
@@ -29,30 +30,36 @@ CREATE INDEX ON simplify_vw_z13 USING GIST (geometry);
 CREATE TABLE osm_landcover_gen_z13 AS
 (
 SELECT subclass,
+       leaf_type,
        ST_MakeValid(
         (ST_dump(
          ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z13
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, leaf_type, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z13
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
     SELECT subclass,
+           leaf_type,
            geometry
     FROM simplify_vw_z13
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
@@ -66,6 +73,7 @@ CREATE INDEX ON osm_landcover_gen_z13 USING GIST (geometry);
 CREATE TABLE simplify_vw_z12 AS
 (
     SELECT subclass,
+           leaf_type,
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(12),2)),
@@ -78,30 +86,36 @@ CREATE INDEX ON simplify_vw_z12 USING GIST (geometry);
 CREATE TABLE osm_landcover_gen_z12 AS
 (
 SELECT subclass,
+       leaf_type,
        ST_MakeValid(
         (ST_dump(
          ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z12
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, leaf_type, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z12
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
     SELECT subclass,
+           leaf_type,
            geometry
     FROM simplify_vw_z12
     WHERE (ST_NPoints(geometry) >= 300  AND subclass IN ('wood', 'forest'))
@@ -115,6 +129,7 @@ CREATE INDEX ON osm_landcover_gen_z12 USING GIST (geometry);
 CREATE TABLE simplify_vw_z11 AS
 (
     SELECT subclass,
+           leaf_type,
             ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(11),2)),
@@ -127,30 +142,36 @@ CREATE INDEX ON simplify_vw_z11 USING GIST (geometry);
 CREATE TABLE osm_landcover_gen_z11 AS
 (
 SELECT subclass,
+       leaf_type,
        ST_MakeValid(
         (ST_dump(
          ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z11
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, leaf_type, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z11
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
     SELECT subclass,
+           leaf_type,
            geometry
     FROM simplify_vw_z11
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
@@ -164,6 +185,7 @@ CREATE INDEX ON osm_landcover_gen_z11 USING GIST (geometry);
 CREATE TABLE simplify_vw_z10 AS
 (
     SELECT subclass,
+           leaf_type,
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(10),2)),
@@ -176,30 +198,36 @@ CREATE INDEX ON simplify_vw_z10 USING GIST (geometry);
 CREATE TABLE osm_landcover_gen_z10 AS
 (
 SELECT subclass,
+       leaf_type,
        ST_MakeValid(
         (ST_dump(
          ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z10
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, leaf_type, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z10
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
     SELECT subclass,
+           leaf_type,
            geometry
     FROM simplify_vw_z10
     WHERE (ST_NPoints(geometry) >= 300 AND subclass IN ('wood', 'forest'))
@@ -213,6 +241,7 @@ CREATE INDEX ON osm_landcover_gen_z10 USING GIST (geometry);
 CREATE TABLE simplify_vw_z9 AS
 (
     SELECT subclass,
+           leaf_type,
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(9),2)),
@@ -225,43 +254,52 @@ CREATE INDEX ON simplify_vw_z9 USING GIST (geometry);
 CREATE TABLE osm_landcover_gen_z9 AS
 (
 SELECT subclass,
+       leaf_type,
        ST_MakeValid(
         (ST_dump(
          ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) < 50
           AND subclass IN ('wood', 'forest')) union_geom50
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
-    SELECT subclass, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
+    SELECT subclass, leaf_type, ST_MakeValid((ST_dump(ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) >= 50
           AND ST_NPoints(geometry) < 300
           AND subclass IN ('wood', 'forest')) union_geom300
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
     SELECT subclass,
+           leaf_type,
            ST_MakeValid(
             (ST_Dump(
              ST_Union(geometry))).geom) AS geometry
     FROM (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) over () AS cid, geometry
         FROM simplify_vw_z9
         WHERE ST_NPoints(geometry) >= 300
           AND subclass IN ('wood', 'forest')) union_geom_rest
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
     SELECT subclass,
+           leaf_type,
            geometry
     FROM simplify_vw_z9
     WHERE subclass NOT IN ('wood', 'forest')
@@ -274,6 +312,7 @@ CREATE INDEX ON osm_landcover_gen_z9 USING GIST (geometry);
 CREATE TABLE simplify_vw_z8 AS
 (
     SELECT subclass,
+           leaf_type,
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(8),2)),
@@ -286,20 +325,24 @@ CREATE INDEX ON simplify_vw_z8 USING GIST (geometry);
 CREATE TABLE osm_landcover_gen_z8 AS
 (
 SELECT subclass,
+       leaf_type,
        ST_MakeValid(
         (ST_Dump(
          ST_Union(geometry))).geom) AS geometry
     FROM
         (
         SELECT subclass,
+               leaf_type,
                ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) OVER () AS cid,
                geometry
         FROM simplify_vw_z8
         ) union_geom
     GROUP BY subclass,
+             leaf_type,
              cid
     UNION ALL
     SELECT subclass,
+           leaf_type,
            geometry
     FROM simplify_vw_z8
     WHERE subclass NOT IN ('wood', 'forest')
@@ -312,6 +355,7 @@ CREATE INDEX ON osm_landcover_gen_z8 USING GIST (geometry);
 CREATE TABLE simplify_vw_z7 AS
 (
     SELECT subclass,
+           leaf_type,
            ST_MakeValid(
             ST_SnapToGrid(
              ST_SimplifyVW(geometry, power(zres(7),2)),
@@ -324,17 +368,20 @@ CREATE INDEX ON simplify_vw_z7 USING GIST (geometry);
 CREATE TABLE osm_landcover_gen_z7 AS
 (
 SELECT subclass,
+       leaf_type,
        ST_MakeValid(
         (ST_Dump(
          ST_Union(geometry))).geom) AS geometry
     FROM
         (
         SELECT  subclass,
+                leaf_type,
                 ST_ClusterDBSCAN(geometry, eps := 0, minpoints := 1) OVER () AS cid,
                 geometry
         FROM simplify_vw_z7
         ) union_geom
 GROUP BY subclass,
+         leaf_type,
          cid
     );
 

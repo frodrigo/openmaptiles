@@ -4,6 +4,9 @@ tables:
     columns:
     - name: geometry
       type: validated_geometry
+    - name: leaf_type
+      key: leaf_type
+      type: string
     - name: area
       type: area
     - name: subclass
@@ -54,4 +57,9 @@ tables:
       - tidalflat
       - saltmarsh
       - mangrove
+      leaf_type:
+      - broadleaved
+      - needleleaved
+      - mixed
+      - leafless
     type: polygon
