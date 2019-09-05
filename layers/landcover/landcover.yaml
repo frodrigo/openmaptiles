@@ -61,9 +61,14 @@ layer:
       - wet_meadow
       - wetland
       - wood
+      leaf_type:
+      - broadleaved
+      - needleleaved
+      - mixed
+      - leafless
   datasource:
     geometry_field: geometry
-    query: (SELECT geometry, class, subclass FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
+    query: (SELECT geometry, class, subclass, leaf_type FROM layer_landcover(!bbox!, z(!scale_denominator!))) AS t
 schema:
   - ./landcover.sql
 datasources:
