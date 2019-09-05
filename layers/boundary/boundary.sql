@@ -23,7 +23,7 @@ CREATE OR REPLACE VIEW boundary_z3 AS (
 CREATE OR REPLACE VIEW boundary_z4 AS (
     SELECT geometry, admin_level, neutral, disputed, disputed_by, claimed_by, maritime
     FROM osm_border_linestring_gen9
-    WHERE admin_level <= 2
+    WHERE admin_level <= 4
 );
 
 
