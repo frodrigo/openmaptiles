@@ -84,3 +84,4 @@ tables:
       - nature_reserve
       boundary:
       - national_park
+      - protected_area
