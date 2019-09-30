@@ -63,7 +63,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, class text, name text, name_en t
         row_number() OVER (
            PARTITION BY LabelGrid(geometry_point, 100 * pixel_width)
            ORDER BY
-               (CASE WHEN boundary = 'national_park' THEN true ELSE false END) DESC,
+               (CASE WHEN boundary IN ('national_park', 'protected_area') THEN true ELSE false END) DESC,
                (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
                area DESC
         )::int AS "rank"
