@@ -51,6 +51,7 @@ layer:
       - ferry
       - bridge
       - pier
+      - cycleway
     subclass:
       description: |
           Distinguish more specific classes of railway and path:
