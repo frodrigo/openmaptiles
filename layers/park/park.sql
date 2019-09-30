@@ -179,7 +179,7 @@ FROM (
                 row_number() OVER (
                     PARTITION BY LabelGrid(geometry_point, 100 * pixel_width)
                     ORDER BY
-                        (CASE WHEN boundary = 'national_park' THEN TRUE ELSE FALSE END) DESC,
+                        (CASE WHEN boundary IN ('national_park', 'protected_area') THEN TRUE ELSE FALSE END) DESC,
                         (COALESCE(NULLIF(tags->'wikipedia', ''), NULLIF(tags->'wikidata', '')) IS NOT NULL) DESC,
                         area DESC
                     )::int AS "rank"
