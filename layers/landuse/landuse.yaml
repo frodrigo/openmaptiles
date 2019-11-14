@@ -40,6 +40,7 @@ layer:
       - neighbourhood
       - dam
       - parking
+      - camp_site
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
