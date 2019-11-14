@@ -81,6 +81,7 @@ tables:
       tourism:
       - theme_park
       - zoo
+      - camp_site
       place:
       - suburb
       - neighbourhood
