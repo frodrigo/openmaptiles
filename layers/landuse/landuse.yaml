@@ -39,6 +39,7 @@ layer:
       - suburb
       - neighbourhood
       - dam
+      - parking
   datasource:
     geometry_field: geometry
     query: (SELECT geometry, class FROM layer_landuse(!bbox!, z(!scale_denominator!))) AS t
