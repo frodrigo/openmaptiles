@@ -88,6 +88,7 @@ tables:
       - pitch
       - playground
       - track
+      - sports_centre
       tourism:
       - theme_park
       - zoo
