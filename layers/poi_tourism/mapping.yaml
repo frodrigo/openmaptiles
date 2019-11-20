@@ -377,6 +377,21 @@ def_poi_mapping: &poi_mapping
   tourism: *poi_mapping_tourism
   waterway: *poi_mapping_waterway
 
+def_poi_polygon_mapping: &poi_polygon_mapping
+  aerialway: *poi_mapping_aerialway
+  amenity: *poi_mapping_amenity
+  barrier: *poi_mapping_barrier
+  building: *poi_mapping_building
+  highway: *poi_mapping_highway
+  historic: *poi_mapping_historic
+  landuse: [__any__]
+  leisure: [__any__]
+  railway: *poi_mapping_railway
+  shop: *poi_mapping_shop
+  sport: *poi_mapping_sport
+  tourism: *poi_mapping_tourism
+  waterway: *poi_mapping_waterway
+
 tables:
   # etldoc: imposm3 -> osm_poi_point
   poi_point:
@@ -388,4 +403,4 @@ tables:
   poi_polygon:
     type: polygon
     columns: *poi_fields
-    mapping: *poi_mapping
+    mapping: *poi_polygon_mapping
