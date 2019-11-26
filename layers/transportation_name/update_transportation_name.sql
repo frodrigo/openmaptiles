@@ -38,7 +38,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
                                    ORDER BY rm.network_type) AS "rank",
       hl.z_order
   FROM osm_highway_linestring hl
-  left join osm_route_member rm on (rm.member = hl.osm_id)
+  left join osm_route_member rm on (rm.member = hl.osm_id) and route = 'road'
 );
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist(geometry);
 

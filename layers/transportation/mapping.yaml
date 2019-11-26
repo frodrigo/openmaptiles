@@ -369,7 +369,6 @@ tables:
       - bridge
       - pier
 
-# TODO: Future table for joining networks
 # etldoc: imposm3 -> osm_route_member
   route_member:
     type: relation_member
@@ -382,9 +381,14 @@ tables:
       type: member_role
     - name: type
       type: member_type
+    - name: route
+      key: route
+      type: string
     - *ref
     - *network
     - *name
     mapping:
       route:
+      - bicycle
+      - hiking
       - road

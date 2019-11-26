@@ -1,3 +1,22 @@
+CREATE TABLE IF NOT EXISTS osm_route_network AS
+SELECT
+    "type", member,
+    (ARRAY['icn', 'ncn', 'rcn', 'lcn'])[min(array_position(ARRAY['icn', 'ncn', 'rcn', 'lcn'], network::text))] AS bicycle_network,
+    (ARRAY['iwn', 'nwn', 'rwn', 'lwn'])[min(array_position(ARRAY['iwn', 'nwn', 'rwn', 'lwn'], network::text))] AS hiking_network
+FROM
+    osm_route_member
+WHERE
+    network != '' AND
+    (
+        (route = 'bicycle' AND network IN ('icn', 'ncn', 'rcn', 'lcn')) OR
+        (route = 'hiking' AND network IN ('iwn', 'nwn', 'rwn', 'lwn'))
+    )
+GROUP BY
+    "type", member;
+
+CREATE INDEX IF NOT EXISTS osm_route_network_member_idx ON osm_route_network(member);
+
+
 CREATE OR REPLACE FUNCTION highway_is_link(highway TEXT) RETURNS BOOLEAN AS $$
     SELECT highway LIKE '%_link';
 $$ LANGUAGE SQL IMMUTABLE STRICT;
@@ -8,7 +27,7 @@ $$ LANGUAGE SQL IMMUTABLE STRICT;
 CREATE OR REPLACE FUNCTION layer_transportation(bbox geometry, zoom_level int)
 RETURNS TABLE(osm_id bigint, geometry geometry, class text, subclass text,
 ramp int, oneway int, brunnel TEXT, service TEXT, layer INT, level INT,
-indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) AS $$
+indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, bicycle_network TEXT, hiking_network TEXT, surface TEXT) AS $$
     SELECT
         osm_id, geometry,
         CASE
@@ -38,6 +57,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
         NULLIF(foot, '') AS foot,
         NULLIF(horse, '') AS horse,
         NULLIF(mtb_scale, '') AS mtb_scale,
+        NULLIF(bicycle_network, '') AS bicycle_network,
+        NULLIF(hiking_network, '') AS hiking_network,
         NULLIF(surface, '') AS surface
     FROM (
         -- etldoc: osm_transportation_merge_linestring_gen7 -> layer_transportation:z4
@@ -50,6 +71,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL::text AS bicycle_network,
+            NULL::text AS hiking_network,
             NULL AS surface, z_order
         FROM osm_transportation_merge_linestring_gen7
         WHERE zoom_level = 4
@@ -65,6 +88,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL::text AS bicycle_network,
+            NULL::text AS hiking_network,
             NULL AS surface, z_order
         FROM osm_transportation_merge_linestring_gen6
         WHERE zoom_level = 5
@@ -80,6 +105,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL::text AS bicycle_network,
+            NULL::text AS hiking_network,
             NULL AS surface, z_order
         FROM osm_transportation_merge_linestring_gen5
         WHERE zoom_level = 6
@@ -95,6 +122,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL::text AS bicycle_network,
+            NULL::text AS hiking_network,
             NULL AS surface, z_order
         FROM osm_transportation_merge_linestring_gen4
         WHERE zoom_level = 7
@@ -110,6 +139,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL::text AS bicycle_network,
+            NULL::text AS hiking_network,
             NULL AS surface, z_order
         FROM osm_transportation_merge_linestring_gen3
         WHERE zoom_level = 8
@@ -126,6 +157,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             bicycle, foot, horse, mtb_scale,
+            NULL::text AS bicycle_network,
+            NULL::text AS hiking_network,
             NULL AS surface, z_order
         FROM osm_highway_linestring_gen2
         WHERE zoom_level BETWEEN 9 AND 10
@@ -142,6 +175,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             bicycle, foot, horse, mtb_scale,
+            NULL::text AS bicycle_network,
+            NULL::text AS hiking_network,
             NULL AS surface, z_order
         FROM osm_highway_linestring_gen1
         WHERE zoom_level = 11
@@ -164,19 +199,25 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
                 ELSE NULL::boolean
             END AS indoor,
             bicycle, foot, horse, mtb_scale,
+            osm_route_network.bicycle_network,
+            osm_route_network.hiking_network,
             surface_value(surface) AS "surface",
             z_order
         FROM osm_highway_linestring
+            LEFT JOIN osm_route_network ON
+                osm_route_network.member = osm_highway_linestring.osm_id
         WHERE NOT is_area AND (
             zoom_level = 12 AND (
                 highway_class(highway, public_transport, construction) NOT IN ('track', 'path', 'minor')
-                OR highway IN ('unclassified', 'residential')
+                OR highway IN ('unclassified', 'residential', 'cycleway')
             ) AND man_made <> 'pier'
             OR zoom_level = 13
                 AND (
                     highway_class(highway, public_transport, construction) NOT IN ('track', 'path') AND man_made <> 'pier'
                 OR
                     man_made = 'pier' AND NOT ST_IsClosed(geometry)
+                OR
+                    highway IN ('cycleway')
                 )
             OR zoom_level >= 14
                 AND (
@@ -197,6 +238,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             NULL::int AS layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL as surface, z_order
         FROM osm_railway_linestring_gen5
         WHERE zoom_level = 8
@@ -213,6 +256,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             NULL::boolean AS is_ramp, NULL::int AS is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_railway_linestring_gen4
         WHERE zoom_level = 9
@@ -227,6 +272,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_railway_linestring_gen3
         WHERE zoom_level = 10
@@ -241,6 +288,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL as surface, z_order
         FROM osm_railway_linestring_gen2
         WHERE zoom_level = 11
@@ -255,6 +304,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL as surface, z_order
         FROM osm_railway_linestring_gen1
         WHERE zoom_level = 12
@@ -270,6 +321,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL as surface, z_order
         FROM osm_railway_linestring
         WHERE zoom_level = 13
@@ -285,6 +338,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_aerialway_linestring_gen1
         WHERE zoom_level = 12
@@ -299,6 +354,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_aerialway_linestring
         WHERE zoom_level >= 13
@@ -312,6 +369,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_shipway_linestring_gen2
         WHERE zoom_level = 11
@@ -325,6 +384,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_shipway_linestring_gen1
         WHERE zoom_level = 12
@@ -339,6 +400,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             is_bridge, is_tunnel, is_ford, is_ramp, is_oneway, NULL as man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_shipway_linestring
         WHERE zoom_level >= 13
@@ -360,6 +423,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             FALSE AS is_ramp, FALSE::int AS is_oneway, man_made,
             layer, NULL::int AS level, NULL::boolean AS indoor,
             NULL as bicycle, NULL as foot, NULL as horse, NULL as mtb_scale,
+            NULL AS bicycle_network,
+            NULL AS hiking_network,
             NULL AS surface, z_order
         FROM osm_highway_polygon
         -- We do not want underground pedestrian areas for now
