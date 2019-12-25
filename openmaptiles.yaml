@@ -17,6 +17,7 @@ tileset:
     - layers/poi/poi.yaml
     - layers/poi_tourism/poi_tourism.yaml
     - layers/aerodrome_label/aerodrome_label.yaml
+    - layers/route/route.yaml
   name: OpenMapTiles
   version: 3.12.0
   id: openmaptiles
