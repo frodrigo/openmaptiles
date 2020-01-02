@@ -31,8 +31,8 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
          osm_building_relation WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon'
          UNION ALL
 
-         -- etldoc: osm_building_multipolygon -> layer_building:z14_
-         -- Buildings that are inner/outer
+         -- etldoc: osm_building_polygon -> layer_building:z14_
+         -- Buildings that are from multipolygons
          SELECT osm_id,geometry,
                   COALESCE(nullif(as_numeric(height),-1),nullif(as_numeric(buildingheight),-1)) as height,
                   COALESCE(nullif(as_numeric(min_height),-1),nullif(as_numeric(buildingmin_height),-1)) as min_height,
@@ -42,7 +42,9 @@ CREATE OR REPLACE VIEW osm_all_buildings AS (
                   nullif(colour, '') AS colour,
                   FALSE as hide_3d
          FROM
-         osm_building_polygon obp WHERE EXISTS (SELECT 1 FROM osm_building_multipolygon obm WHERE obp.osm_id = obm.osm_id)
+         osm_building_polygon obp
+         WHERE osm_id < 0
+
          UNION ALL
          -- etldoc: osm_building_polygon -> layer_building:z14_
          -- Standalone buildings
