@@ -3,7 +3,7 @@ volumes:
   pgdata:
 services:
   postgres:
-    image: "openmaptiles/postgis:${TOOLS_VERSION}"
+    image: "sophox/postgis"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -27,7 +27,7 @@ services:
     networks:
       - postgres_conn
   import-osm:
-    image: "openmaptiles/import-osm:${TOOLS_VERSION}"
+    image: "openmaptiles/import-osm:${TOOLS_VERSION}-imposm-0.8.1"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
