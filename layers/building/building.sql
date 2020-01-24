@@ -13,7 +13,7 @@ END;
 $$ STRICT
 LANGUAGE plpgsql IMMUTABLE;
 
-CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE ST_GeometryType(geometry) = 'ST_Polygon';
+CREATE INDEX IF NOT EXISTS osm_building_relation_building_idx ON osm_building_relation(building) WHERE building = '' AND ST_GeometryType(geometry) = 'ST_Polygon';
 CREATE INDEX IF NOT EXISTS osm_building_relation_member_idx ON osm_building_relation(member) WHERE role = 'outline';
 
 CREATE OR REPLACE VIEW osm_all_buildings AS (
