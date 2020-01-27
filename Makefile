@@ -65,7 +65,8 @@ build/mapping.yaml: build
 	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > $@
 
 build/tileset.sql: build
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > $@
+	echo "SET max_parallel_workers_per_gather TO 8;" > $@
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml >> $@
 
 .PHONY: clean
 clean:
