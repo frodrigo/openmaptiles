@@ -14,6 +14,7 @@ CREATE MATERIALIZED VIEW osm_poi_stop_centroid AS (
 	HAVING
 		count(*) > 1
 );
+CREATE UNIQUE INDEX IF NOT EXISTS osm_poi_stop_centroid_uic_ref_idx ON osm_poi_stop_centroid(uic_ref);
 
 DROP MATERIALIZED VIEW IF EXISTS osm_poi_stop_rank CASCADE;
 CREATE MATERIALIZED VIEW osm_poi_stop_rank AS (
@@ -34,3 +35,4 @@ CREATE MATERIALIZED VIEW osm_poi_stop_rank AS (
 		subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
 	ORDER BY p.uic_ref, rk
 );
+CREATE UNIQUE INDEX IF NOT EXISTS osm_poi_stop_rank_osm_id_idx ON osm_poi_stop_rank(osm_id);

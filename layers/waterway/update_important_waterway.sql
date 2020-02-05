@@ -73,10 +73,10 @@ CREATE OR REPLACE FUNCTION waterway_important.refresh() RETURNS trigger AS
   $BODY$
   BEGIN
     RAISE LOG 'Refresh waterway';
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen1;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen2;
-    REFRESH MATERIALIZED VIEW osm_important_waterway_linestring_gen3;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen1;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen2;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_important_waterway_linestring_gen3;
     DELETE FROM waterway_important.updates;
     RETURN null;
   END;

@@ -40,6 +40,7 @@ CREATE MATERIALIZED VIEW osm_transportation_name_network AS (
   FROM osm_highway_linestring hl
   left join osm_route_member rm on (rm.member = hl.osm_id)
 );
+CREATE UNIQUE INDEX IF NOT EXISTS osm_transportation_name_network_osm_id_idx ON osm_transportation_name_network(osm_id, rank);
 CREATE INDEX IF NOT EXISTS osm_transportation_name_network_geometry_idx ON osm_transportation_name_network USING gist(geometry);
 
 
@@ -150,12 +151,12 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh() RETURNS trigger AS
   BEGIN
     RAISE LOG 'Refresh transportation_name';
     PERFORM update_osm_route_member();
-    REFRESH MATERIALIZED VIEW osm_transportation_name_network;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen1;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen2;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen3;
-    REFRESH MATERIALIZED VIEW osm_transportation_name_linestring_gen4;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_network;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen1;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen2;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen3;
+    -- REFRESH MATERIALIZED VIEW CONCURRENTLY osm_transportation_name_linestring_gen4;
     DELETE FROM transportation_name.updates;
     RETURN null;
   END;
