@@ -34,6 +34,3 @@ CREATE MATERIALIZED VIEW osm_poi_stop_rank AS (
 		subclass IN ('bus_stop', 'bus_station', 'tram_stop', 'subway')
 	ORDER BY p.uic_ref, rk
 );
-
-ALTER TABLE osm_poi_point ADD COLUMN IF NOT EXISTS agg_stop INTEGER DEFAULT NULL;
-SELECT update_osm_poi_point_agg();
