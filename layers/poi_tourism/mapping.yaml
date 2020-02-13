@@ -1,144 +1,38 @@
 
-# imposm3 mapping file for https://github.com/osm2vectortiles/imposm3
-# Warning: this is not the official imposm3
+tags:
+  include: ['healthcare:speciality', 'general', 'emergency', 'yes', 'emergency', 'yes', 'byclicle', 'byclicle', 'byclicle', 'access', 'yes', 'ref', 'aerodrome:international', 'service:bicycle:rental', 'information:board', 'map', 'access', 'yes', 'recycling_type', 'centre', 'recycling_type', 'container', 'vending:excrement_bags', 'waste', 'dog_excrement', 'access', 'yes', 'tower:type', 'observation', '?', 'access', 'yes', 'school:FR', 'maternelle']
 
-# aerialway values , see http://taginfo.openstreetmap.org/keys/aerialway#values
-def_poi_mapping_aerialway: &poi_mapping_aerialway
-  - station
-
-# amenity values , see http://taginfo.openstreetmap.org/keys/amenity#values
-def_poi_mapping_amenity: &poi_mapping_amenity
-  - arts_centre
-  - bank
-  - bar
-  - bbq
-  - bicycle_parking
-  - bicycle_rental
-  - biergarten
-  - bus_station
-  - cafe
-  - cinema
-  - clinic
-  - college
-  - community_centre
-  - courthouse
-  - dentist
-  - doctors
-  - embassy
-  - fast_food
-  - ferry_terminal
-  - fire_station
-  - food_court
-  - fuel
-  - grave_yard
-  - hospital
-  - ice_cream
-  - kindergarten
-  - library
-  - marketplace
-  - motorcycle_parking
-  - nightclub
-  - nursing_home
-  - parking
-  - pharmacy
-  - place_of_worship
-  - police
-  - post_box
-  - post_office
-  - prison
-  - pub
-  - public_building
-  - recycling
-  - restaurant
-  - school
-  - shelter
-  - swimming_pool
-  - taxi
-  - telephone
-  - theatre
-  - toilets
-  - townhall
-  - university
-  - veterinary
-  - waste_basket
-
-# barrier values , see http://taginfo.openstreetmap.org/keys/barrier#values
-def_poi_mapping_barrier: &poi_mapping_barrier
-  - bollard
-  - border_control
-  - cycle_barrier
-  - gate
-  - lift_gate
-  - sally_port
-  - stile
-  - toll_booth
-
-# building values , see http://taginfo.openstreetmap.org/keys/building#values
-def_poi_mapping_building: &poi_mapping_building
-  - dormitory
-
-# highway values , see http://taginfo.openstreetmap.org/keys/highway#values
-def_poi_mapping_highway: &poi_mapping_highway
-  - bus_stop
-
-# historic values , see http://taginfo.openstreetmap.org/keys/historic#values
-def_poi_mapping_historic: &poi_mapping_historic
-  - monument
-  - castle
-  - ruins
-
-# landuse values , see http://taginfo.openstreetmap.org/keys/landuse#values
-def_poi_mapping_landuse: &poi_mapping_landuse
-  - basin
-  - brownfield
-  - cemetery
-  - reservoir
-  - winter_sports
-
-# leisure values , see http://taginfo.openstreetmap.org/keys/leisure#values
-def_poi_mapping_leisure: &poi_mapping_leisure
-  - dog_park
-  - escape_game
-  - garden
-  - golf_course
-  - ice_rink
-  - hackerspace
-  - marina
-  - miniature_golf
-  - park
-  - pitch
-  - playground
-  - sports_centre
-  - stadium
-  - swimming_area
-  - swimming_pool
-  - water_park
-
-# railway values , see http://taginfo.openstreetmap.org/keys/railway#values
-def_poi_mapping_railway: &poi_mapping_railway
-  - halt
-  - station
-  - subway_entrance
-  - train_station_entrance
-  - tram_stop
-
-# shop values , see http://taginfo.openstreetmap.org/keys/shop#values
-def_poi_mapping_shop: &poi_mapping_shop
+:def_poi: &poi_mapping
+  craft:
+  - basket_maker
+  - beekeeper
+  - brewery
+  - distillery
+  - grinding_mill
+  - handicraft
+  - jeweller 
+  - leather
+  - luthier
+  - oil_mill
+  - pottery
+  - sculptor 
+  - winery
+  shop:
   - accessories
   - alcohol
   - antiques
   - art
   - bag
   - bakery
-  - beauty
   - bed
   - beverages
+  - bicycle
   - bicycle
   - books
   - boutique
   - butcher
   - camera
-  - car
+  - car_parts
   - car_repair
   - carpet
   - charity
@@ -152,17 +46,15 @@ def_poi_mapping_shop: &poi_mapping_shop
   - copyshop
   - cosmetics
   - deli
-  - delicatessen
-  - department_store
   - doityourself
   - dry_cleaning
   - electronics
   - erotic
   - fabric
+  - farm
   - florist
   - frozen_food
   - furniture
-  - garden_centre
   - general
   - gift
   - greengrocer
@@ -185,11 +77,14 @@ def_poi_mapping_shop: &poi_mapping_shop
   - newsagent
   - optician
   - outdoor
+  - pastry
   - perfume
   - perfumery
   - pet
+  - pet_grooming
   - photo
   - second_hand
+  - seefood
   - shoes
   - sports
   - stationery
@@ -205,96 +100,106 @@ def_poi_mapping_shop: &poi_mapping_shop
   - watches
   - weapons
   - wholesale
-  - wine
-
-# sport values , see http://taginfo.openstreetmap.org/keys/sport#values
-def_poi_mapping_sport: &poi_mapping_sport
-  - american_football
-  - archery
-  - athletics
-  - australian_football
-  - badminton
-  - baseball
-  - basketball
-  - beachvolleyball
-  - billiards
-  - bmx
-  - boules
-  - bowls
-  - boxing
-  - canadian_football
-  - canoe
-  - chess
-  - climbing
-  - climbing_adventure
-  - cricket
-  - cricket_nets
-  - croquet
-  - curling
-  - cycling
-  - disc_golf
-  - diving
-  - dog_racing
-  - equestrian
-  - fatsal
-  - field_hockey
-  - free_flying
-  - gaelic_games
-  - golf
-  - gymnastics
-  - handball
-  - hockey
-  - horse_racing
-  - horseshoes
-  - ice_hockey
-  - ice_stock
-  - judo
-  - karting
-  - korfball
-  - long_jump
-  - model_aerodrome
-  - motocross
-  - motor
-  - multi
-  - netball
-  - orienteering
-  - paddle_tennis
-  - paintball
-  - paragliding
-  - pelota
-  - racquet
-  - rc_car
-  - rowing
-  - rugby
-  - rugby_league
-  - rugby_union
-  - running
-  - sailing
-  - scuba_diving
-  - shooting
-  - shooting_range
-  - skateboard
-  - skating
-  - skiing
-  - soccer
-  - surfing
-  - swimming
-  - table_soccer
-  - table_tennis
-  - team_handball
-  - tennis
-  - toboggan
-  - volleyball
-  - water_ski
-  - yoga
-
-# tourism values , see http://taginfo.openstreetmap.org/keys/tourism#values
-def_poi_mapping_tourism: &poi_mapping_tourism
+  amenity:
+  - arts_centre
+  - atm
+  - bank
+  - bar
+  - bbq
+  - bench
+  - bicycle_parking
+  - bicycle_rental
+  - bus_station
+  - cafe
+  - car_pooling
+  - charging_station
+  - cinema
+  - clinic
+  - college
+  - community_centre
+  - compressed_air
+  - courthouse
+  - dentist
+  - doctors
+  - drinking_water
+  - embassy
+  - fast_food
+  - ferry_terminal
+  - fire_station
+  - food_court
+  - fuel
+  - grave_yard
+  - hospital
+  - ice_cream
+  - kindergarten
+  - library
+  - life_ring
+  - marketplace
+  - motorcycle_parking
+  - nightclub
+  - parking
+  - pharmacy
+  - place_of_worship
+  - police
+  - post_box
+  - post_office
+  - prison
+  - pub
+  - restaurant
+  - school
+  - shelter
+  - shower
+  - taxi
+  - telephone
+  - theatre
+  - toilets
+  - townhall
+  - university
+  - vending_machine
+  - veterinary
+  - waste_basket
+  - waste_basket
+  - waste_disposal
+  office:
+  - estate_agent
+  information:
+  - office
+  healthcare:
+  - physiotherapist
+  emergency:
+  - defibrillator
+  - life_ring
+  - lifeguard_base
+  - mountain_rescue
+  - water_rescue_station
+  railway:
+  - halt
+  - station
+  - subway_entrance
+  - train_station_entrance
+  - tram_stop
+  highway:
+  - bus_stop
+  - motorway_junction
+  barrier:
+  - border_control.
+  - city_wall
+  - cycle_barrier
+  - stile
+  - toll_booth
+  aeroway:
+  - aerodrome
+  waterway:
+  - dock
+  leisure:
+  - __any__
+  tourism:
   - alpine_hut
+  - apartment
+  - apartment
   - aquarium
   - artwork
   - attraction
-  - bed_and_breakfast
   - camp_site
   - caravan_site
   - chalet
@@ -307,12 +212,82 @@ def_poi_mapping_tourism: &poi_mapping_tourism
   - museum
   - picnic_site
   - theme_park
-  - viewpoint
+  - water_park
+  - wiewpoint
+  - wilderness_hut
   - zoo
+  amentiy:
+  - recycling
+  - recycling
+  natural:
+  - peak
+  boundary:
+  - protected_area
+  man_made:
+  - tower
+  landuse:
+  - __any__
+  historic:
+  - archaeological_site
+  - castle
+  - castle_wall
+  - church
+  - city_gate
+  - memorial
+  - monument
+  - wayside_cross
+  - wayside_shrine
+  sport:
+  - athletics
+  - badminton
+  - basketball
+  - beachvolleyball
+  - billiards
+  - bmx
+  - boules
+  - bullfighting
+  - canoe
+  - climbing
+  - climbing_adventure
+  - cycling
+  - diving
+  - equestrian
+  - free_flying
+  - futsal
+  - golf
+  - gymnastics
+  - handball
+  - horse_racing
+  - ice_hockey
+  - karting
+  - kitesurfing
+  - motocross
+  - motor
+  - multi
+  - orienteering
+  - paddle_tennis
+  - paintball
+  - pelota
+  - racquet
+  - rowing
+  - rugby
+  - rugby_league
+  - rugby_union
+  - running
+  - sailing
+  - scuba_diving
+  - shooting
+  - skateboard
+  - soccer
+  - surfing
+  - swimming
+  - table_soccer
+  - table_tennis
+  - tennis
+  - volleyball
+  - water_ski
+  - yoga
 
-# waterway values , see http://taginfo.openstreetmap.org/keys/waterway#values
-def_poi_mapping_waterway: &poi_mapping_waterway
-  - dock
 
 def_poi_fields: &poi_fields
   - name: osm_id
@@ -362,36 +337,6 @@ def_poi_fields: &poi_fields
     key: sport
     type: string
 
-def_poi_mapping: &poi_mapping
-  aerialway: *poi_mapping_aerialway
-  amenity: *poi_mapping_amenity
-  barrier: *poi_mapping_barrier
-  building: *poi_mapping_building
-  highway: *poi_mapping_highway
-  historic: *poi_mapping_historic
-  landuse: *poi_mapping_landuse
-  leisure: *poi_mapping_leisure
-  railway: *poi_mapping_railway
-  shop: *poi_mapping_shop
-  sport: *poi_mapping_sport
-  tourism: *poi_mapping_tourism
-  waterway: *poi_mapping_waterway
-
-def_poi_polygon_mapping: &poi_polygon_mapping
-  aerialway: *poi_mapping_aerialway
-  amenity: *poi_mapping_amenity
-  barrier: *poi_mapping_barrier
-  building: *poi_mapping_building
-  highway: *poi_mapping_highway
-  historic: *poi_mapping_historic
-  landuse: [__any__]
-  leisure: [__any__]
-  railway: *poi_mapping_railway
-  shop: *poi_mapping_shop
-  sport: *poi_mapping_sport
-  tourism: *poi_mapping_tourism
-  waterway: *poi_mapping_waterway
-
 tables:
   # etldoc: imposm3 -> osm_poi_point
   poi_point:
@@ -403,4 +348,4 @@ tables:
   poi_polygon:
     type: polygon
     columns: *poi_fields
-    mapping: *poi_polygon_mapping
+    mapping: *poi_mapping

@@ -66,7 +66,7 @@ layer:
     key_field: osm_id
     key_field_as_attribute: no
     srid: 900913
-    query: (SELECT osm_id, osm_id AS id, geometry, name, name_en, name_de, {name_languages}, class, subclass, agg_stop, layer, level, indoor, rank FROM layer_poi_tourism(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
+    query: (SELECT osm_id, osm_id AS id, geometry, name, name_en, name_de, {name_languages}, superclass, class, subclass, style, agg_stop, layer, level, indoor, rank FROM layer_poi_tourism(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t
 schema:
   - ./class.sql
   - ./poi_tourism.sql

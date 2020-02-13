@@ -3,28 +3,31 @@
 -- etldoc:     label="layer_poi_tourism | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi_tourism(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, class text, subclass text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, superclass text, class text, subclass text, style text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
     SELECT osm_id_hash AS osm_id, geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
-        poi_tourism_class(subclass, mapping_key) AS class,
-        CASE
-            WHEN subclass = 'information'
-                THEN NULLIF(information, '')
-            WHEN subclass = 'place_of_worship'
-                    THEN NULLIF(religion, '')
-            WHEN subclass = 'pitch'
-                    THEN NULLIF(sport, '')
-            ELSE subclass
-        END AS subclass,
+        (poi_tourism_class(mapping_key, subclass, tags)).superclass AS superclass,
+        (poi_tourism_class(mapping_key, subclass, tags)).class AS class,
+        (poi_tourism_class(mapping_key, subclass, tags)).subclass AS subclass,
+        (poi_tourism_class(mapping_key, subclass, tags)).style AS style,
+--        CASE
+--            WHEN subclass = 'information'
+--                THEN NULLIF(information, '')
+--            WHEN subclass = 'place_of_worship'
+--                    THEN NULLIF(religion, '')
+--            WHEN subclass = 'pitch'
+--                    THEN NULLIF(sport, '')
+--            ELSE subclass
+--        END AS subclass,
         agg_stop,
         NULLIF(layer, 0) AS layer,
         "level",
         CASE WHEN indoor=TRUE THEN 1 END as indoor,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
-            ORDER BY CASE WHEN name = '' THEN 2000 ELSE poi_tourism_class_rank(poi_tourism_class(subclass, mapping_key)) END ASC
+            ORDER BY CASE WHEN name = '' THEN 2000 ELSE (poi_tourism_class(mapping_key, subclass, tags)).priority END ASC
         )::int AS "rank"
     FROM (
         -- etldoc: osm_poi_point ->  layer_poi_tourism:z12
