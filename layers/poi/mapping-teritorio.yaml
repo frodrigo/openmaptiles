@@ -1,0 +1,351 @@
+
+tags:
+  include_: ['healthcare:speciality', 'general', 'emergency', 'yes', 'emergency', 'yes', 'byclicle', 'byclicle', 'byclicle', 'access', 'yes', 'ref', 'aerodrome:international', 'service:bicycle:rental', 'information:board', 'map', 'access', 'yes', 'recycling_type', 'centre', 'recycling_type', 'container', 'vending:excrement_bags', 'waste', 'dog_excrement', 'access', 'yes', 'tower:type', 'observation', '?', 'access', 'yes', 'school:FR', 'maternelle']
+
+:def_poi: &poi_mapping
+  craft:
+  - basket_maker
+  - beekeeper
+  - brewery
+  - distillery
+  - grinding_mill
+  - handicraft
+  - jeweller 
+  - leather
+  - luthier
+  - oil_mill
+  - pottery
+  - sculptor 
+  - winery
+  shop:
+  - accessories
+  - alcohol
+  - antiques
+  - art
+  - bag
+  - bakery
+  - bed
+  - beverages
+  - bicycle
+  - bicycle
+  - books
+  - boutique
+  - butcher
+  - camera
+  - car_parts
+  - car_repair
+  - carpet
+  - charity
+  - chemist
+  - chocolate
+  - clothes
+  - coffee
+  - computer
+  - confectionery
+  - convenience
+  - copyshop
+  - cosmetics
+  - deli
+  - doityourself
+  - dry_cleaning
+  - electronics
+  - erotic
+  - fabric
+  - farm
+  - florist
+  - frozen_food
+  - furniture
+  - general
+  - gift
+  - greengrocer
+  - hairdresser
+  - hardware
+  - hearing_aids
+  - hifi
+  - ice_cream
+  - interior_decoration
+  - jewelry
+  - kiosk
+  - lamps
+  - laundry
+  - mall
+  - massage
+  - mobile_phone
+  - motorcycle
+  - music
+  - musical_instrument
+  - newsagent
+  - optician
+  - outdoor
+  - pastry
+  - perfume
+  - perfumery
+  - pet
+  - pet_grooming
+  - photo
+  - second_hand
+  - seefood
+  - shoes
+  - sports
+  - stationery
+  - supermarket
+  - tailor
+  - tattoo
+  - ticket
+  - tobacco
+  - toys
+  - travel_agency
+  - video
+  - video_games
+  - watches
+  - weapons
+  - wholesale
+  amenity:
+  - arts_centre
+  - atm
+  - bank
+  - bar
+  - bbq
+  - bench
+  - bicycle_parking
+  - bicycle_rental
+  - bus_station
+  - cafe
+  - car_pooling
+  - charging_station
+  - cinema
+  - clinic
+  - college
+  - community_centre
+  - compressed_air
+  - courthouse
+  - dentist
+  - doctors
+  - drinking_water
+  - embassy
+  - fast_food
+  - ferry_terminal
+  - fire_station
+  - food_court
+  - fuel
+  - grave_yard
+  - hospital
+  - ice_cream
+  - kindergarten
+  - library
+  - life_ring
+  - marketplace
+  - motorcycle_parking
+  - nightclub
+  - parking
+  - pharmacy
+  - place_of_worship
+  - police
+  - post_box
+  - post_office
+  - prison
+  - pub
+  - restaurant
+  - school
+  - shelter
+  - shower
+  - taxi
+  - telephone
+  - theatre
+  - toilets
+  - townhall
+  - university
+  - vending_machine
+  - veterinary
+  - waste_basket
+  - waste_basket
+  - waste_disposal
+  office:
+  - estate_agent
+  information:
+  - office
+  healthcare:
+  - physiotherapist
+  emergency:
+  - defibrillator
+  - life_ring
+  - lifeguard_base
+  - mountain_rescue
+  - water_rescue_station
+  railway:
+  - halt
+  - station
+  - subway_entrance
+  - train_station_entrance
+  - tram_stop
+  highway:
+  - bus_stop
+  - motorway_junction
+  barrier:
+  - border_control.
+  - city_wall
+  - cycle_barrier
+  - stile
+  - toll_booth
+  aeroway:
+  - aerodrome
+  waterway:
+  - dock
+  leisure:
+  - __any__
+  tourism:
+  - alpine_hut
+  - apartment
+  - apartment
+  - aquarium
+  - artwork
+  - attraction
+  - camp_site
+  - caravan_site
+  - chalet
+  - gallery
+  - guest_house
+  - hostel
+  - hotel
+  - information
+  - motel
+  - museum
+  - picnic_site
+  - theme_park
+  - water_park
+  - wiewpoint
+  - wilderness_hut
+  - zoo
+  amentiy:
+  - recycling
+  - recycling
+  natural:
+  - peak
+  boundary:
+  - protected_area
+  man_made:
+  - tower
+  landuse:
+  - __any__
+  historic:
+  - archaeological_site
+  - castle
+  - castle_wall
+  - church
+  - city_gate
+  - memorial
+  - monument
+  - wayside_cross
+  - wayside_shrine
+  sport:
+  - athletics
+  - badminton
+  - basketball
+  - beachvolleyball
+  - billiards
+  - bmx
+  - boules
+  - bullfighting
+  - canoe
+  - climbing
+  - climbing_adventure
+  - cycling
+  - diving
+  - equestrian
+  - free_flying
+  - futsal
+  - golf
+  - gymnastics
+  - handball
+  - horse_racing
+  - ice_hockey
+  - karting
+  - kitesurfing
+  - motocross
+  - motor
+  - multi
+  - orienteering
+  - paddle_tennis
+  - paintball
+  - pelota
+  - racquet
+  - rowing
+  - rugby
+  - rugby_league
+  - rugby_union
+  - running
+  - sailing
+  - scuba_diving
+  - shooting
+  - skateboard
+  - soccer
+  - surfing
+  - swimming
+  - table_soccer
+  - table_tennis
+  - tennis
+  - volleyball
+  - water_ski
+  - yoga
+
+
+def_poi_fields: &poi_fields
+  - name: osm_id
+    type: id
+  - name: geometry
+    type: geometry
+  - name: name
+    key: name
+    type: string
+  - name: name_en
+    key: name:en
+    type: string
+  - name: name_de
+    key: name:de
+    type: string
+  - name: tags
+    type: hstore_tags
+  - name: subclass
+    type: mapping_value
+  - name: mapping_key
+    type: mapping_key
+  - name: station
+    key: station
+    type: string
+  - name: funicular
+    key: funicular
+    type: string
+  - name: information
+    key: information
+    type: string
+  - name: uic_ref
+    key: uic_ref
+    type: string
+  - name: religion
+    key: religion
+    type: string
+  - name: level
+    key: level
+    type: integer
+  - name: indoor
+    key: indoor
+    type: bool
+  - name: layer
+    key: layer
+    type: integer
+  - name: sport
+    key: sport
+    type: string
+
+tables:
+  # etldoc: imposm3 -> osm_poi_point
+  poi_point:
+    type: point
+    fields: *poi_fields
+    mapping: *poi_mapping
+
+  # etldoc: imposm3 -> osm_poi_polygon
+  poi_polygon:
+    type: polygon
+    fields: *poi_fields
+    mapping: *poi_mapping

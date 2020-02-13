@@ -62,7 +62,7 @@ build/openmaptiles.tm2source/data.yml: build
 	docker-compose run $(DC_OPTS) openmaptiles-tools generate-tm2source openmaptiles.yaml --host="postgres" --port=5432 --database="openmaptiles" --user="openmaptiles" --password="openmaptiles" > build/openmaptiles.tm2source/data.yml
 
 build/mapping.yaml: build
-	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml > build/mapping.yaml
+	docker-compose run $(DC_OPTS) openmaptiles-tools generate-imposm3 openmaptiles.yaml | sed -e '1h;2,$$H;$$!d;g' -e 's/]\r\n  include_: \[/, /' > build/mapping.yaml
 
 build/tileset.sql: build
 	docker-compose run $(DC_OPTS) openmaptiles-tools generate-sql openmaptiles.yaml > build/tileset.sql
