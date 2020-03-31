@@ -50,7 +50,7 @@ CREATE OR REPLACE VIEW osm_buildings_standalone AS
          osm_building_polygon obp
            LEFT JOIN osm_building_relation obr ON obp.osm_id >= 0 AND obr.member = obp.osm_id AND obr.role = 'outline'
          WHERE ST_GeometryType(obp.geometry) IN ('ST_Polygon', 'ST_MultiPolygon')
-;
+/* DELAY_MATERIALIZED_VIEW_CREATION */;
 
 CREATE OR REPLACE VIEW osm_all_buildings AS
 SELECT * FROM osm_buildings_relation UNION ALL

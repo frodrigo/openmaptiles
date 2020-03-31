@@ -3,7 +3,7 @@ volumes:
   pgdata:
 services:
   postgres:
-    image: "sophox/postgis"
+    image: "openmaptiles/postgis:build-5.0-dev"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -27,7 +27,7 @@ services:
     networks:
       - postgres_conn
   import-osm:
-    image: "openmaptiles/import-osm:${TOOLS_VERSION}-imposm-0.8.1"
+    image: "openmaptiles/openmaptiles-tools:build-5.0-dev"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
@@ -38,7 +38,7 @@ services:
       - ./build:/mapping
       - ./cache:/cache
   import-osm-diff:
-    image: "openmaptiles/import-osm:${TOOLS_VERSION}"
+    image: "openmaptiles/openmaptiles-tools:build-5.0-dev"
     env_file: .env
     command: ./import_diff.sh
     environment:
@@ -50,7 +50,7 @@ services:
       - ./build:/mapping
       - ./cache:/cache
   update-osm:
-    image: "openmaptiles/import-osm:${TOOLS_VERSION}"
+    image: "openmaptiles/openmaptiles-tools:build-5.0-dev"
     env_file: .env
     environment:
       DIFF_MODE: ${DIFF_MODE}
@@ -62,14 +62,22 @@ services:
       - ./build:/mapping
       - ./cache:/cache
   openmaptiles-tools:
-    image: "openmaptiles/openmaptiles-tools:${TOOLS_VERSION}"
+    image: "openmaptiles/openmaptiles-tools:build-5.0-dev"
     env_file: .env
+    environment:
+      # Must match the version of this file (first line)
+      # download-osm will use it when generating a composer file
+      MAKE_DC_VERSION: "2.3"
+      # Allow DIFF_MODE to be overwritten from shell
+      DIFF_MODE: ${DIFF_MODE}
     networks:
       - postgres_conn
     volumes:
       - .:/tileset
       - ./data:/import
       - ./build:/sql
+      - ./build:/mapping
+      - ./cache:/cache
   openmaptiles-tools-latest:
     # This target exists for experimental tools that have not yet been published.
     # Do not use this for production.

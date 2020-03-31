@@ -81,7 +81,7 @@ clean-docker:
 db-start:
 	docker-compose up -d postgres
 	@echo "Wait for PostgreSQL to start..."
-	docker-compose run $(DC_OPTS) import-osm  ./pgwait.sh
+	docker-compose run $(DC_OPTS) import-osm  pgwait
 
 .PHONY: db-stop
 db-stop:
@@ -106,7 +106,11 @@ psql: db-start
 
 .PHONY: import-osm
 import-osm: db-start all
-	docker-compose run $(DC_OPTS) import-osm
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-osm
+
+.PHONY: update-osm
+update-osm: db-start all
+	docker-compose run $(DC_OPTS) openmaptiles-tools import-update
 
 .PHONY: import-sql
 import-sql: db-start all
@@ -224,7 +228,7 @@ psql-pg-stat-reset:
 
 .PHONY: forced-clean-sql
 forced-clean-sql:
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 \
+	docker-compose run $(DC_OPTS) import-osm psql.sh -v ON_ERROR_STOP=1 \
 		-c "DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA IF NOT EXISTS public;" \
 		-c "CREATE EXTENSION hstore; CREATE EXTENSION postgis; CREATE EXTENSION unaccent;" \
 		-c "CREATE EXTENSION fuzzystrmatch; CREATE EXTENSION osml10n; CREATE EXTENSION pg_stat_statements;" \
@@ -252,7 +256,7 @@ psql-vacuum-analyze:
 .PHONY: psql-analyze
 psql-analyze:
 	@echo "Start - postgresql: ANALYZE VERBOSE;"
-	docker-compose run $(DC_OPTS) import-osm ./psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
+	docker-compose run $(DC_OPTS) import-osm psql.sh -v ON_ERROR_STOP=1 -P pager=off -c 'ANALYZE VERBOSE;'
 
 .PHONY: list-docker-images
 list-docker-images:
