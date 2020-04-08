@@ -3,7 +3,7 @@
 -- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, superclass text, class text, subclass text, style text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, superclass text, class text, subclass text, zoom integer, style text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
     SELECT osm_id_hash AS osm_id, geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
@@ -11,6 +11,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         (teritorio_poi_class(mapping_key, subclass, tags)).superclass AS superclass,
         (teritorio_poi_class(mapping_key, subclass, tags)).class AS class,
         (teritorio_poi_class(mapping_key, subclass, tags)).subclass AS subclass,
+        (teritorio_poi_class(mapping_key, subclass, tags)).zoom AS zoom,
         (teritorio_poi_class(mapping_key, subclass, tags)).style AS style,
 --        CASE
 --            WHEN subclass = 'information'
@@ -30,6 +31,13 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             ORDER BY CASE WHEN name = '' THEN 2000 ELSE (teritorio_poi_class(mapping_key, subclass, tags)).priority END ASC
         )::int AS "rank"
     FROM (
+--        SELECT *,
+--            osm_id*10 AS osm_id_hash FROM osm_poi_point
+--            WHERE geometry && bbox
+--                AND zoom_level BETWEEN 10 AND 11
+--                AND (SELECT (teritorio_poi_class(mapping_key, subclass, tags)).zoom) <= zoom_level
+--
+--        UNION ALL
         -- etldoc: osm_poi_point ->  layer_poi:z12
         -- etldoc: osm_poi_point ->  layer_poi:z13
         SELECT *,
@@ -37,7 +45,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             WHERE geometry && bbox
                 AND zoom_level BETWEEN 12 AND 13
                 AND ((subclass='station' AND mapping_key = 'railway')
-                    OR subclass IN ('halt', 'ferry_terminal'))
+                    OR subclass IN ('halt', 'ferry_terminal')
+                    OR (SELECT (teritorio_poi_class(mapping_key, subclass, tags)).zoom) <= zoom_level
+                    )
         UNION ALL
 
         -- etldoc: osm_poi_point ->  layer_poi:z14_
@@ -47,6 +57,18 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
                 AND zoom_level >= 14
 
         UNION ALL
+
+--        SELECT *,
+--            NULL::INTEGER AS agg_stop,
+--            CASE WHEN osm_id<0 THEN -osm_id*10+4
+--                ELSE osm_id*10+1
+--            END AS osm_id_hash
+--        FROM osm_poi_polygon
+--            WHERE geometry && bbox
+--                AND zoom_level BETWEEN 10 AND 11
+--                    OR (SELECT (teritorio_poi_class(mapping_key, subclass, tags)).zoom) <= zoom_level
+--
+--        UNION ALL
         -- etldoc: osm_poi_polygon ->  layer_poi:z12
         -- etldoc: osm_poi_polygon ->  layer_poi:z13
         SELECT *,
@@ -58,7 +80,9 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             WHERE geometry && bbox
                 AND zoom_level BETWEEN 12 AND 13
                 AND ((subclass='station' AND mapping_key = 'railway')
-                    OR subclass IN ('halt', 'ferry_terminal'))
+                    OR subclass IN ('halt', 'ferry_terminal')
+                    OR (SELECT (teritorio_poi_class(mapping_key, subclass, tags)).zoom) <= zoom_level
+                    )
 
         UNION ALL
         -- etldoc: osm_poi_polygon ->  layer_poi:z14_
@@ -71,6 +95,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             WHERE geometry && bbox
                 AND zoom_level >= 14
         ) as poi_union
-    ORDER BY "rank"
+    ORDER BY zoom, "rank"
     ;
 $$ LANGUAGE SQL IMMUTABLE;

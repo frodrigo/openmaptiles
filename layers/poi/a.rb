@@ -2,7 +2,7 @@ require 'csv'
 require 'yaml'
 
 csv = CSV.new(STDIN, headers: true).collect{ |row|
-  row.to_h.slice('superclass', 'class', 'style', 'priority', 'key', 'value', 'extra_tags')
+  row.to_h.slice('superclass', 'class', 'zoom', 'style', 'priority', 'key', 'value', 'extra_tags')
 }.select{ |row|
   row['superclass']
 }.map{ |row|
@@ -114,6 +114,7 @@ whens = csv.collect{ |row|
   _superclass = "'#{row['superclass']}'"
   _class = "'#{row['class'] || row['value']}'"
   _subclass = row['class'] ? "'#{row['subclass'] || row['value']}'" : 'NULL'
+  _zoom = row['zoom'] ? row['zoom'] : 18
   _style = row['style'] && row['style'] != '' ? "'#{row['style']}'" : 'NULL'
   _priority = row['priority']
 
@@ -128,7 +129,7 @@ whens = csv.collect{ |row|
     }.join(' AND ')
   end
 
-  "        SELECT #{_superclass}, #{_class}, #{_subclass}, #{_style}, #{_priority} WHERE key = '#{row['key']}' AND value = '#{row['value']}'#{extra_tags}"
+  "        SELECT #{_superclass}, #{_class}, #{_subclass}, #{_zoom}, #{_style}, #{_priority} WHERE key = '#{row['key']}' AND value = '#{row['value']}'#{extra_tags}"
 }.join(" UNION ALL\n")
 
 file = File.open('class-teritorio.sql', 'w')
@@ -137,13 +138,14 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
     superclass TEXT,
     class TEXT,
     subclass TEXT,
+    zoom INTEGER,
     style TEXT,
     priority INTEGER
 ) AS $$
     SELECT * FROM (
 #{whens} UNION ALL
-        SELECT key, value, NULL, NULL, NULL
-    ) AS t(superclass, class, subclass, style, priority)
+        SELECT key, value, NULL, 14, NULL, NULL
+    ) AS t(superclass, class, subclass, zoom, style, priority)
     ORDER BY priority
     LIMIT 1
 $$ LANGUAGE SQL IMMUTABLE;
