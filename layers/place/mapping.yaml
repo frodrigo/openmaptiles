@@ -176,3 +176,34 @@ tables:
       - suburb
       - neighbourhood
       - isolated_dwelling
+      - square
+
+  # etldoc: imposm3 -> osm_city_polygon
+  city_polygon:
+    type: polygon
+    fields:
+    - name: osm_id
+      type: id
+    - name: geometry
+      type: geometry
+    - *name
+    - *name_en
+    - *name_de
+    - name: tags
+      type: hstore_tags
+    - name: place
+      key: place
+      type: string
+    - key: population
+      name: population
+      type: integer
+    - key: capital
+      name: capital
+      type: string
+    - *rank
+    filters:
+      require:
+        name: ["__any__"]
+    mapping:
+      place:
+      - square
