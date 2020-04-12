@@ -174,6 +174,8 @@ indoor INT, bicycle TEXT, foot TEXT, horse TEXT, mtb_scale TEXT, surface TEXT) A
             ) AND man_made <> 'pier'
             OR zoom_level = 13
                 AND (
+                    highway = 'cycleway'
+                OR
                     highway_class(highway, public_transport, construction) NOT IN ('track', 'path') AND man_made <> 'pier'
                 OR
                     man_made = 'pier' AND NOT ST_IsClosed(geometry)
