@@ -60,9 +60,13 @@ FROM (
                                  population DESC NULLS LAST,
                                  length(name) ASC
                              )::int AS gridrank
-                  FROM osm_city_point
-                  WHERE geometry && bbox
-                    AND ((zoom_level = 6 AND place <= 'town'::city_place
+                  FROM (
+                    SELECT osm_id, geometry, name, name_en, name_de, tags, place, population, capital, rank FROM osm_city_point WHERE geometry && bbox
+                    UNION ALL
+                    SELECT osm_id, geometry, name, name_en, name_de, tags, place, population, capital, rank FROM osm_city_polygon WHERE geometry && bbox
+                  ) AS osm_city_point
+                  WHERE
+                        ((zoom_level = 6 AND place <= 'town'::city_place
                       OR (zoom_level BETWEEN 7 AND 9 AND place <= 'village'::city_place)
                       OR (zoom_level BETWEEN 10 AND 12 AND place <= 'suburb'::city_place)
                       OR (zoom_level >= 13)
