@@ -335,6 +335,8 @@ FROM (
                      ) AND man_made <> 'pier'
                  OR zoom_level = 13
                          AND (
+                                    highway = 'cycleway'
+                            OR
                                     highway_class(highway, public_transport, construction) NOT IN ('track', 'path') AND
                                     man_made <> 'pier'
                             OR
