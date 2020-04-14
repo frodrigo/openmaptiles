@@ -283,21 +283,25 @@ CREATE OR REPLACE FUNCTION building_polygon.refresh() RETURNS trigger AS
   $BODY$
 language plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_osm_building_relation_store ON osm_building_relation;
 CREATE TRIGGER trigger_osm_building_relation_store
     AFTER INSERT OR UPDATE OR DELETE ON osm_building_relation
     FOR EACH ROW
     EXECUTE PROCEDURE building_polygon.store();
 
+DROP TRIGGER IF EXISTS trigger_osm_building_polygon_store ON osm_building_polygon;
 CREATE TRIGGER trigger_osm_building_polygon_store
     AFTER INSERT OR UPDATE OR DELETE ON osm_building_polygon
     FOR EACH ROW
     EXECUTE PROCEDURE building_polygon.store();
 
+DROP TRIGGER IF EXISTS trigger_flag ON building_polygon.buildings;
 CREATE TRIGGER trigger_flag
     AFTER INSERT ON building_polygon.buildings
     FOR EACH STATEMENT
     EXECUTE PROCEDURE building_polygon.flag();
 
+DROP TRIGGER IF EXISTS trigger_refresh ON building_polygon.updates;
 CREATE CONSTRAINT TRIGGER trigger_refresh
     AFTER INSERT ON building_polygon.updates
     INITIALLY DEFERRED
