@@ -1,7 +1,7 @@
 require 'csv'
 require 'yaml'
 
-csv = CSV.new(STDIN, headers: true).collect{ |row|
+csv = CSV.new(STDIN, headers: true, row_sep: "\r\n").collect{ |row|
   row.to_h.slice('superclass', 'class', 'zoom', 'style', 'priority', 'key', 'value', 'extra_tags')
 }.select{ |row|
   row['superclass']
@@ -36,8 +36,8 @@ y = {'def_poi': Hash[y]}
 yaml_str = YAML.dump(y)
 
 include_tags = csv.map{ |row| row['extra_tags'] }.select{ |extra_tags| extra_tags }.collect{ |extra_tags|
-  extra_tags.map{ |extra_tag| extra_tags[0] }
-}.flatten
+  extra_tags.collect{ |extra_tag| extra_tag[0] }
+}.flatten.uniq
 include_tags = include_tags.join("', '")
 include_tags = "'#{include_tags}'" if include_tags.size > 0
 
@@ -94,6 +94,9 @@ def_poi_fields: &poi_fields
   - name: sport
     key: sport
     type: string
+  - name: access -- for reject filters
+    key: access
+    type: string
 
 tables:
   # etldoc: imposm3 -> osm_poi_point
@@ -101,12 +104,18 @@ tables:
     type: point
     fields: *poi_fields
     mapping: *poi_mapping
+    filters:
+      reject:
+        access: ['no', 'private']
 
   # etldoc: imposm3 -> osm_poi_polygon
   poi_polygon:
     type: polygon
     fields: *poi_fields
     mapping: *poi_mapping
+    filters:
+      reject:
+        access: ['no', 'private']
 """)
 
 
@@ -124,12 +133,12 @@ whens = csv.collect{ |row|
       if etags[1] == ''
         extra_tags = "tags->'#{etags[0]}' = '#{etags[1]}'"
       else
-        extra_tags = "(tags?'#{etags[0]}' AND tags->'#{etags[0]}' != 'no')"
+        extra_tags = "(tags?'#{etags[0]}' AND tags->'#{etags[0]}' NOT IN ('no', 'private'))"
       end
     }.join(' AND ')
   end
 
-  "        SELECT #{_superclass}, #{_class}, #{_subclass}, #{_zoom}, #{_style}, #{_priority} WHERE key = '#{row['key']}' AND value = '#{row['value']}'#{extra_tags}"
+  "            SELECT #{_superclass}, #{_class}, #{_subclass}, #{_zoom}, #{_style}, #{_priority} WHERE tags?'#{row['key']}' AND tags->'#{row['key']}' = '#{row['value']}'#{extra_tags}"
 }.join(" UNION ALL\n")
 
 file = File.open('class-teritorio.sql', 'w')
@@ -143,10 +152,11 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
     priority INTEGER
 ) AS $$
     SELECT * FROM (
-#{whens} UNION ALL
-        SELECT key, value, NULL, 14, NULL, NULL
+#{whens}
     ) AS t(superclass, class, subclass, zoom, style, priority)
-    ORDER BY priority
+    ORDER BY
+        zoom,
+        priority
     LIMIT 1
 $$ LANGUAGE SQL IMMUTABLE;
 """)

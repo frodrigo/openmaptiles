@@ -28,7 +28,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         CASE WHEN indoor=TRUE THEN 1 ELSE NULL END as indoor,
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
-            ORDER BY CASE WHEN name = '' THEN 2000 ELSE (teritorio_poi_class(mapping_key, subclass, tags)).priority END ASC
+            ORDER BY (teritorio_poi_class(mapping_key, subclass, tags)).zoom, (teritorio_poi_class(mapping_key, subclass, tags)).priority
         )::int AS "rank"
     FROM (
 --        SELECT *,
@@ -95,6 +95,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             WHERE geometry && bbox
                 AND zoom_level >= 14
         ) as poi_union
-    ORDER BY zoom, "rank"
+    ORDER BY "rank"
     ;
 $$ LANGUAGE SQL IMMUTABLE;
