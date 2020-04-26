@@ -1,6 +1,6 @@
 
 tags:
-  include: ['healthcare:speciality', 'general', 'emergency', 'yes', 'emergency', 'yes', 'byclicle', 'byclicle', 'byclicle', 'access', 'yes', 'ref', 'aerodrome:international', 'service:bicycle:rental', 'information:board', 'map', 'access', 'yes', 'recycling_type', 'centre', 'recycling_type', 'container', 'vending:excrement_bags', 'waste', 'dog_excrement', 'access', 'yes', 'tower:type', 'observation', '?', 'access', 'yes', 'school:FR', 'maternelle']
+  include: ['healthcare:speciality', 'emergency', 'byclicle', 'car', 'scooter', 'access', 'ref', 'aerodrome:international', 'service:bicycle:rental', 'information:board', 'recycling_type', 'vending:excrement_bags', 'waste', 'tower:type', '?', 'school:FR']
 
 :def_poi: &poi_mapping
   craft:
@@ -182,7 +182,7 @@ tags:
   - bus_stop
   - motorway_junction
   barrier:
-  - border_control.
+  - border_control
   - city_wall
   - cycle_barrier
   - stile
@@ -221,12 +221,14 @@ tags:
   - recycling
   natural:
   - peak
-  boundary:
-  - protected_area
   man_made:
   - tower
   landuse:
   - __any__
+  building:
+  - cathedral
+  - chapel
+  - church
   historic:
   - archaeological_site
   - castle
@@ -336,6 +338,9 @@ def_poi_fields: &poi_fields
   - name: sport
     key: sport
     type: string
+  - name: access -- for reject filters
+    key: access
+    type: string
 
 tables:
   # etldoc: imposm3 -> osm_poi_point
@@ -343,9 +348,15 @@ tables:
     type: point
     columns: *poi_fields
     mapping: *poi_mapping
+    filters:
+      reject:
+        access: ['no', 'private']
 
   # etldoc: imposm3 -> osm_poi_polygon
   poi_polygon:
     type: polygon
     columns: *poi_fields
     mapping: *poi_mapping
+    filters:
+      reject:
+        access: ['no', 'private']
