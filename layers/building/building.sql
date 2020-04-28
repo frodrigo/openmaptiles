@@ -92,8 +92,8 @@ SELECT * FROM osm_buildings_standalone
 DROP TABLE IF EXISTS osm_all_buildings_mat CASCADE;
 CREATE TABLE osm_all_buildings_mat AS (
     SELECT
-        --max(osm_id) AS osm_id,
-        ST_Collect(geometry) AS geometry,
+        array_agg(osm_id ORDER BY osm_id) AS osm_ids,
+        ST_Collect(geometry ORDER BY osm_id) AS geometry,
         height, min_height, levels, min_level, material, colour, hide_3d
     FROM
         (SELECT DISTINCT ON (osm_id) * FROM osm_all_buildings) AS t
@@ -148,7 +148,15 @@ RETURNS TABLE(geometry geometry, osm_id bigint, render_height int, render_min_he
            material,
            colour,
            hide_3d
-        FROM (SELECT NULL::bigint AS osm_id, (ST_Dump(geometry)).geom AS geometry, height, min_height, levels, min_level, material, colour, hide_3d FROM osm_all_buildings_mat WHERE geometry && bbox) AS t
+        FROM (
+            SELECT osm_id, t.geometry, height, min_height, levels, min_level, material, colour, hide_3d
+            FROM osm_all_buildings_mat
+            JOIN LATERAL unnest(
+                osm_ids,
+                (SELECT array_agg((t).geom) FROM ST_Dump(geometry) AS t)
+            ) AS t(osm_id, geometry) ON true
+            WHERE osm_all_buildings_mat.geometry && bbox
+        ) AS t
         WHERE
             (levels IS NULL OR levels < 1000) AND
             (min_level IS NULL OR min_level < 1000) AND
