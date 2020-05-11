@@ -1,7 +1,7 @@
 require 'csv'
 require 'yaml'
 
-csv = CSV.new(STDIN, headers: true, row_sep: "\r\n").collect{ |row|
+csv = CSV.new(STDIN, headers: true).collect{ |row| Hash[row.collect{ |k, v| [k, v == '' ? nil : v] }] }.collect{ |row|
   row.to_h.slice('superclass', 'class', 'zoom', 'style', 'priority', 'key', 'value', 'extra_tags')
 }.select{ |row|
   row['superclass']
@@ -130,10 +130,12 @@ whens = csv.collect{ |row|
   extra_tags = ''
   if row['extra_tags']
     extra_tags = ' AND ' + row['extra_tags'].collect{ |etags|
-      if etags[1] == ''
-        extra_tags = "tags->'#{etags[0]}' = '#{etags[1]}'"
-      else
+      if etags[0] == 'access'
         extra_tags = "(tags?'#{etags[0]}' AND tags->'#{etags[0]}' NOT IN ('no', 'private'))"
+      elsif ['*', ''].include?(etags[1])
+        extra_tags = "tags?'#{etags[0]}'"
+      else
+        extra_tags = "tags->'#{etags[0]}' = '#{etags[1]}'"
       end
     }.join(' AND ')
   end
