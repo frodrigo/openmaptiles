@@ -1,6 +1,6 @@
 
 tags:
-  include_: ['healthcare:speciality', 'emergency', 'byclicle', 'car', 'scooter', 'access', 'ref', 'aerodrome:international', 'service:bicycle:rental', 'information:board', 'recycling_type', 'vending:excrement_bags', 'waste', 'tower:type', '?', 'school:FR']
+  include_: ['healthcare:speciality', 'emergency', 'bycycle', 'car', 'scooter', 'access', 'ref', 'aerodrome:international', 'service:bicycle:rental', 'information:board', 'recycling_type', 'vending:excrement_bags', 'waste', 'name', 'tower:type', 'school:FR']
 
 :def_poi: &poi_mapping
   craft:
@@ -212,17 +212,19 @@ tags:
   - museum
   - picnic_site
   - theme_park
+  - viewpoint
   - water_park
-  - wiewpoint
   - wilderness_hut
   - zoo
   amentiy:
   - recycling
   - recycling
-  natural:
-  - peak
   man_made:
+  - lighthouse
   - tower
+  natural:
+  - beach
+  - peak
   landuse:
   - __any__
   building:
