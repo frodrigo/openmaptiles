@@ -1,6 +1,6 @@
 
 tags:
-  include_: ['healthcare:speciality', 'emergency', 'bycycle', 'car', 'scooter', 'access', 'ref', 'aerodrome:international', 'service:bicycle:rental', 'information:board', 'recycling_type', 'vending:excrement_bags', 'waste', 'name', 'tower:type', 'school:FR']
+  include_: ['healthcare:speciality', 'emergency', 'bycycle', 'car', 'scooter', 'name', 'ref', 'aerodrome', 'service:bicycle:rental', 'information:board', 'access', 'amenity', 'vending', 'leisure', 'tower:type', 'school:FR']
 
 :def_poi: &poi_mapping
   craft:
@@ -10,12 +10,12 @@ tags:
   - distillery
   - grinding_mill
   - handicraft
-  - jeweller 
+  - jeweller
   - leather
   - luthier
   - oil_mill
   - pottery
-  - sculptor 
+  - sculptor
   - winery
   shop:
   - accessories
@@ -26,7 +26,6 @@ tags:
   - bakery
   - bed
   - beverages
-  - bicycle
   - bicycle
   - books
   - boutique
@@ -158,7 +157,6 @@ tags:
   - vending_machine
   - veterinary
   - waste_basket
-  - waste_basket
   - waste_disposal
   office:
   - estate_agent
@@ -196,7 +194,6 @@ tags:
   tourism:
   - alpine_hut
   - apartment
-  - apartment
   - aquarium
   - artwork
   - attraction
@@ -216,9 +213,11 @@ tags:
   - water_park
   - wilderness_hut
   - zoo
-  amentiy:
-  - recycling
-  - recycling
+  recycling_type:
+  - centre
+  - container
+  waste:
+  - dog_excrement
   man_made:
   - lighthouse
   - tower
