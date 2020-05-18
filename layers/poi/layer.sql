@@ -3,16 +3,16 @@
 -- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, superclass text, class text, subclass text, zoom integer, style text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, tourism_superclass text, tourism_class text, tourism_subclass text, tourism_zoom integer, tourism_style text, agg_stop integer, layer integer, level integer, indoor integer, tourism_rank int) AS $$
     SELECT osm_id_hash AS osm_id, geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
-        (teritorio_poi_class(mapping_key, subclass, tags)).superclass AS superclass,
-        (teritorio_poi_class(mapping_key, subclass, tags)).class AS class,
-        (teritorio_poi_class(mapping_key, subclass, tags)).subclass AS subclass,
-        (teritorio_poi_class(mapping_key, subclass, tags)).zoom AS zoom,
-        (teritorio_poi_class(mapping_key, subclass, tags)).style AS style,
+        (teritorio_poi_class(mapping_key, subclass, tags)).superclass AS tourism_superclass,
+        (teritorio_poi_class(mapping_key, subclass, tags)).class AS tourism_class,
+        (teritorio_poi_class(mapping_key, subclass, tags)).subclass AS tourism_subclass,
+        (teritorio_poi_class(mapping_key, subclass, tags)).zoom AS tourism_zoom,
+        (teritorio_poi_class(mapping_key, subclass, tags)).style AS tourism_style,
 --        CASE
 --            WHEN subclass = 'information'
 --                THEN NULLIF(information, '')
@@ -29,7 +29,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY (teritorio_poi_class(mapping_key, subclass, tags)).zoom, (teritorio_poi_class(mapping_key, subclass, tags)).priority
-        )::int AS "rank"
+        )::int AS tourism_rank
     FROM (
 --        SELECT *,
 --            osm_id*10 AS osm_id_hash FROM osm_poi_point
@@ -95,6 +95,6 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             WHERE geometry && bbox
                 AND zoom_level >= 14
         ) as poi_union
-    ORDER BY "rank"
+    ORDER BY tourism_rank
     ;
 $$ LANGUAGE SQL IMMUTABLE;
