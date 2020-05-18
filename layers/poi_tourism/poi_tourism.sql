@@ -3,16 +3,16 @@
 -- etldoc:     label="layer_poi_tourism | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi_tourism(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, superclass text, class text, subclass text, zoom integer, style text, agg_stop integer, layer integer, level integer, indoor integer, "rank" int) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, tourism_superclass text, tourism_class text, tourism_subclass text, tourism_zoom integer, tourism_style text, agg_stop integer, layer integer, level integer, indoor integer, tourism_rank int) AS $$
     SELECT osm_id_hash AS osm_id, geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
-        (poi_tourism_class(mapping_key, subclass, tags)).superclass AS superclass,
-        (poi_tourism_class(mapping_key, subclass, tags)).class AS class,
-        (poi_tourism_class(mapping_key, subclass, tags)).subclass AS subclass,
-        (poi_tourism_class(mapping_key, subclass, tags)).zoom AS zoom,
-        (poi_tourism_class(mapping_key, subclass, tags)).style AS style,
+        (poi_tourism_class(mapping_key, subclass, tags)).superclass AS tourism_superclass,
+        (poi_tourism_class(mapping_key, subclass, tags)).class AS tourism_class,
+        (poi_tourism_class(mapping_key, subclass, tags)).subclass AS tourism_subclass,
+        (poi_tourism_class(mapping_key, subclass, tags)).zoom AS tourism_zoom,
+        (poi_tourism_class(mapping_key, subclass, tags)).style AS tourism_style,
 --        CASE
 --            WHEN subclass = 'information'
 --                THEN NULLIF(information, '')
@@ -29,7 +29,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         row_number() OVER (
             PARTITION BY LabelGrid(geometry, 100 * pixel_width)
             ORDER BY (poi_tourism_class(mapping_key, subclass, tags)).zoom, (poi_tourism_class(mapping_key, subclass, tags)).priority
-        )::int AS "rank"
+        )::int AS tourism_rank
     FROM (
         -- etldoc: osm_poi_point ->  layer_poi_tourism:z12
         -- etldoc: osm_poi_point ->  layer_poi_tourism:z13
@@ -76,7 +76,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
             WHERE geometry && bbox
                 AND zoom_level >= 14
         ) as poi_union
-    ORDER BY "rank"
+    ORDER BY tourism_rank
     ;
 $$ LANGUAGE SQL STABLE
                 PARALLEL SAFE;
