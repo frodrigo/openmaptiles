@@ -30,7 +30,7 @@ yg = csv.group_by{ |row|
 yg['landuse'] = [{'value' => '__any__'}]
 yg['leisure'] = [{'value' => '__any__'}]
 y = yg.collect{ |key, group|
-  [key, group.collect{ |row| row['value'] }.sort]
+  [key, group.collect{ |row| row['value'] }.sort.uniq]
 }
 y = {'def_poi': Hash[y]}
 yaml_str = YAML.dump(y)
