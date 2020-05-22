@@ -132,7 +132,7 @@ whens = csv.collect{ |row|
     extra_tags = ' AND ' + row['extra_tags'].collect{ |etags|
       if etags[0] == 'access'
         extra_tags = "(tags?'#{etags[0]}' AND tags->'#{etags[0]}' NOT IN ('no', 'private'))"
-      elsif ['*', ''].include?(etags[1])
+      elsif ['*', nil].include?(etags[1])
         extra_tags = "(tags?'#{etags[0]}' AND tags->'#{etags[0]}' != 'no')"
       else
         extra_tags = "tags->'#{etags[0]}' = '#{etags[1]}'"
