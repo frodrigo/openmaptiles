@@ -83,12 +83,24 @@ tables:
     - name: tags
       type: hstore_tags
     - *rank
+    - name: place
+      key: place
+      type: string
+    - name: landuse
+      key: landuse
+      type: string
     filters:
       require:
         name: ["__any__"]
+      reject:
+        place: ["islet"] # Avoid forest islet
     mapping:
       place:
       - island
+      landuse:
+      - forest
+      natural:
+      - wood
 
   # etldoc: imposm3 -> osm_island_point
   island_point:
@@ -177,6 +189,7 @@ tables:
       - neighbourhood
       - isolated_dwelling
       - square
+      - locality
 
   # etldoc: imposm3 -> osm_city_polygon
   city_polygon:

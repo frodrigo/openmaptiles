@@ -108,7 +108,7 @@ FROM (
              COALESCE(NULLIF(name_en, ''), name) AS name_en,
              COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
              tags,
-             'island' AS class,
+             CASE WHEN place = 'island' THEN 'island' ELSE 'forest' END AS class,
              island_rank(area) AS "rank",
              NULL::int AS capital,
              NULL::text AS iso_a2
