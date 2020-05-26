@@ -75,7 +75,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
         tags,
-        'island' AS class, island_rank(area) AS "rank", NULL::int AS capital,
+        CASE WHEN place = 'island' THEN 'island' ELSE 'forest' END AS class, island_rank(area) AS "rank", NULL::int AS capital,
         NULL::text AS iso_a2
     FROM osm_island_polygon
     WHERE geometry && bbox AND
