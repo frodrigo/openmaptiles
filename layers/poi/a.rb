@@ -1,8 +1,26 @@
 require 'csv'
 require 'yaml'
+require 'json'
 
-csv = CSV.new(STDIN, headers: true).collect{ |row| Hash[row.collect{ |k, v| [k, v == '' ? nil : v] }] }.collect{ |row|
-  row.to_h.slice('superclass', 'class', 'zoom', 'style', 'priority', 'key', 'value', 'extra_tags')
+superclass_name_fr = class_name_fr = subclass_name_fr = nil
+csv = CSV.new(File.new(ARGV[0]).read, headers: true).collect{ |row| Hash[row.collect{ |k, v| [k, v == '' ? nil : v] }] }.collect{ |row|
+  row.to_h.slice('superclass:name:fr', 'superclass', 'class:name:fr', 'class', 'subclass:name:fr', 'zoom', 'style', 'priority', 'key', 'value', 'extra_tags')
+}.collect{ |row|
+  if row['superclass:name:fr']
+    superclass_name_fr = row['superclass:name:fr']
+    class_name_fr = subclass_name_fr = nil
+  end
+  if row['class:name:fr']
+    class_name_fr = row['class:name:fr']
+    subclass_name_fr = class_name_fr
+  end
+  if row['subclass:name:fr']
+    subclass_name_fr = row['subclass:name:fr']
+  end
+  row['superclass:name:fr'] = superclass_name_fr
+  row['class:name:fr'] = class_name_fr
+  row['subclass:name:fr'] = subclass_name_fr
+  row
 }.select{ |row|
   row['superclass']
 }.map{ |row|
@@ -24,6 +42,25 @@ if !error.empty?
   exit 1
 end
 
+
+hierarchy = Hash[csv.group_by{ |row| row['superclass'] }.collect{ |superclass, c|
+  c0 = c[0]
+  c = Hash[c.collect{ |r|
+    r.slice('class:name:fr', 'class', 'subclass:name:fr', 'zoom', 'style', 'priority', 'key', 'value', 'extra_tags')
+  }.group_by{ |r| r['class'] }.collect{ |classs, sc|
+    sc0 = sc[0]
+    sc = Hash[sc.collect{ |rr|
+      [rr['value'], {label: {en: rr['value'], fr: rr['subclass:name:fr']}}]
+    }]
+    [classs, {label: {en: classs, fr: sc0['class:name:fr']}, subclass: sc}]
+  }]
+  pop = c.delete(nil)
+  pop = pop[:subclass] if pop
+  [superclass, {label: {en: superclass, fr: c0['superclass:name:fr']}, class: c.merge(pop || {})}]
+}]
+file = File.open('ontology.json', 'w')
+file.write(JSON.pretty_generate(hierarchy))
+
 yg = csv.group_by{ |row|
   row['key']
 }
@@ -35,9 +72,17 @@ y = yg.collect{ |key, group|
 y = {'def_poi': Hash[y]}
 yaml_str = YAML.dump(y)
 
+plus_tags = CSV.new(File.new(ARGV[1]).read, headers: true).collect{ |row|
+  row['tag'].gsub(' ', '').gsub(' ', '')
+}.select{ |tag|
+  tag != ''
+}
+
 include_tags = csv.map{ |row| row['extra_tags'] }.select{ |extra_tags| extra_tags }.collect{ |extra_tags|
   extra_tags.collect{ |extra_tag| extra_tag[0] }
-}.flatten.uniq
+}.flatten
+include_tags += plus_tags
+include_tags = include_tags.sort.uniq
 include_tags = include_tags.join("', '")
 include_tags = "'#{include_tags}'" if include_tags.size > 0
 
