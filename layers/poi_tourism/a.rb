@@ -151,7 +151,7 @@ tables:
     mapping: *poi_mapping
     filters:
       reject:
-        access: ['no', 'private']
+        access: ['no']
 
   # etldoc: imposm3 -> osm_poi_polygon
   poi_polygon:
@@ -160,7 +160,7 @@ tables:
     mapping: *poi_mapping
     filters:
       reject:
-        access: ['no', 'private']
+        access: ['no']
 """)
 
 
