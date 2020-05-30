@@ -180,12 +180,13 @@ whens = csv.collect{ |row|
   extra_tags = ''
   if row['extra_tags']
     extra_tags = ' AND ' + row['extra_tags'].collect{ |etags|
-      if etags[0] == 'access'
-        extra_tags = "(tags?'#{etags[0]}' AND tags->'#{etags[0]}' NOT IN ('no', 'private'))"
-      elsif ['*', nil].include?(etags[1])
+      values = (etags[1] || "").split(';').map{ |t| "'#{t}'"}.join(', ')
+      if ['*', nil].include?(etags[1])
         extra_tags = "(tags?'#{etags[0]}' AND tags->'#{etags[0]}' != 'no')"
+      elsif etags[0][-1] == '!'
+        extra_tags = "(NOT tags?'#{etags[0][0..-2]}' OR tags->'#{etags[0][0..-2]}' NOT IN (#{values}))"
       else
-        extra_tags = "tags->'#{etags[0]}' = '#{etags[1]}'"
+        extra_tags = "tags->'#{etags[0]}' IN (#{values})"
       end
     }.join(' AND ')
   end
