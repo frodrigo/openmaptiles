@@ -76,7 +76,7 @@ plus_tags = CSV.new(File.new(ARGV[1]).read, headers: true).collect{ |row|
   row['tag'].gsub(' ', '').gsub(' ', '')
 }.select{ |tag|
   tag != ''
-}
+}.uniq
 
 include_tags = csv.map{ |row| row['extra_tags'] }.select{ |extra_tags| extra_tags }.collect{ |extra_tags|
   extra_tags.collect{ |extra_tag| extra_tag[0] }
@@ -85,6 +85,11 @@ include_tags += plus_tags
 include_tags = include_tags.sort.uniq
 include_tags = include_tags.join("', '")
 include_tags = "'#{include_tags}'" if include_tags.size > 0
+
+poi_yaml = File.open('poi.yaml').read()
+poi_yaml = poi_yaml.gsub('{extra_attributes}', plus_tags.map{ |t| "tags->'#{t}' AS \"#{t}\"" }.join(', '))
+File.open('poi_teritorio.yaml', 'w').write(poi_yaml)
+
 
 file = File.open('mapping-teritorio.yaml', 'w')
 file.write("""
