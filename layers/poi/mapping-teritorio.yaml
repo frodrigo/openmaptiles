@@ -1,6 +1,6 @@
 
 tags:
-  include_: ['healthcare:speciality', 'emergency', 'bycycle', 'car', 'scooter', 'name', 'ref', 'aerodrome', 'service:bicycle:rental', 'information:board', 'access', 'amenity', 'vending', 'leisure', 'tower:type', 'school:FR']
+  include_: ['acces', 'access!', 'addr:city', 'addr:country', 'addr:flats', 'addr:housename', 'addr:housenumber', 'addr:place', 'addr:postcode', 'addr:street', 'adress', 'aerodrome', 'alt_name', 'amenity', 'artwork_type', 'bath:type', 'bicycle', 'board_type', 'building', 'bycycle', 'capacity', 'car', 'castle_type', 'contact:email', 'contact:facebook', 'contact:fax', 'contact:mobile', 'contact:phone', 'contact:website', 'covered', 'cuisine', 'delivery', 'description', 'ele', 'email', 'emergency', 'fax', 'fee', 'female', 'healthcare', 'healthcare:speciality', 'heritage', 'information', 'information:board', 'leisure', 'local_name', 'male', 'mapillary', 'museum', 'name', 'network', 'opening_hours', 'operator', 'organic', 'park_ride', 'phone', 'produce_on_site', 'ref', 'ref:FR:CRTA', 'school:FR', 'scooter', 'second_hand', 'service:bicycle:rental', 'service:bicyle', 'shelter_type', 'stars', 'supervised', 'surveillance', 'takeaway', 'tower:type', 'unisex', 'vending', 'waste', 'website', 'wheelchair', 'wikidata', 'wikipedia']
 
 :def_poi: &poi_mapping
   craft:
@@ -132,7 +132,6 @@ tags:
   - ice_cream
   - kindergarten
   - library
-  - life_ring
   - marketplace
   - motorcycle_parking
   - nightclub
@@ -144,6 +143,7 @@ tags:
   - post_office
   - prison
   - pub
+  - public_bath
   - restaurant
   - school
   - shelter
@@ -189,6 +189,7 @@ tags:
   - aerodrome
   waterway:
   - dock
+  - waterfall
   leisure:
   - __any__
   tourism:
@@ -223,7 +224,8 @@ tags:
   - tower
   natural:
   - beach
-  - peak
+  - cave_entrance
+  - spring
   landuse:
   - __any__
   building:
@@ -290,6 +292,8 @@ tags:
   - volleyball
   - water_ski
   - yoga
+  mountain_pass:
+  - 'yes'
 
 
 def_poi_fields: &poi_fields

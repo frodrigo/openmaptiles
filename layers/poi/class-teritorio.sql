@@ -58,17 +58,16 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'services', 'ticket', NULL, 17, '⬤', 700 WHERE tags?'shop' AND tags->'shop' = 'ticket' UNION ALL
             SELECT 'services', 'travel_agency', NULL, 18, '⬤', 700 WHERE tags?'shop' AND tags->'shop' = 'travel_agency' UNION ALL
             SELECT 'safety', 'care', 'pharmacy', 17, '⬤', 100 WHERE tags?'amenity' AND tags->'amenity' = 'pharmacy' UNION ALL
-            SELECT 'safety', 'care', 'doctors', 18, '•', 50 WHERE tags?'amenity' AND tags->'amenity' = 'doctors' AND tags->'healthcare:speciality' = 'general' UNION ALL
+            SELECT 'safety', 'care', 'doctors', 18, '•', 50 WHERE tags?'amenity' AND tags->'amenity' = 'doctors' AND tags->'healthcare:speciality' IN ('general') UNION ALL
             SELECT 'safety', 'care', 'dentist', 18, '•', 50 WHERE tags?'amenity' AND tags->'amenity' = 'dentist' UNION ALL
             SELECT 'safety', 'care', 'physiotherapist', 18, '•', 50 WHERE tags?'healthcare' AND tags->'healthcare' = 'physiotherapist' UNION ALL
             SELECT 'safety', 'care', 'veterinary', 18, '•', 50 WHERE tags?'amenity' AND tags->'amenity' = 'veterinary' UNION ALL
-            SELECT 'safety', 'emergency', 'hospital', 15, '⬤', 0 WHERE tags?'amenity' AND tags->'amenity' = 'hospital' AND tags->'emergency' = 'yes' UNION ALL
-            SELECT 'safety', 'emergency', 'clinic', 15, '⬤', 0 WHERE tags?'amenity' AND tags->'amenity' = 'clinic' AND tags->'emergency' = 'yes' UNION ALL
+            SELECT 'safety', 'emergency', 'hospital', 15, '⬤', 0 WHERE tags?'amenity' AND tags->'amenity' = 'hospital' AND tags->'emergency' IN ('yes') UNION ALL
+            SELECT 'safety', 'emergency', 'clinic', 15, '⬤', 0 WHERE tags?'amenity' AND tags->'amenity' = 'clinic' AND tags->'emergency' IN ('yes') UNION ALL
             SELECT 'safety', 'emergency', 'defibrillator', 17, '⬤', 0 WHERE tags?'emergency' AND tags->'emergency' = 'defibrillator' UNION ALL
             SELECT 'safety', 'rescue', 'water_rescue_station', 17, '⬤', 0 WHERE tags?'emergency' AND tags->'emergency' = 'water_rescue_station' UNION ALL
             SELECT 'safety', 'rescue', 'lifeguard_base', 17, '⬤', 0 WHERE tags?'emergency' AND tags->'emergency' = 'lifeguard_base' UNION ALL
             SELECT 'safety', 'rescue', 'life_ring', 18, '•', 4 WHERE tags?'emergency' AND tags->'emergency' = 'life_ring' UNION ALL
-            SELECT 'safety', 'rescue', 'life_ring', 18, '•', 4 WHERE tags?'amenity' AND tags->'amenity' = 'life_ring' UNION ALL
             SELECT 'safety', 'rescue', 'mountain_rescue', 17, '⬤', 0 WHERE tags?'emergency' AND tags->'emergency' = 'mountain_rescue' UNION ALL
             SELECT 'safety', 'rescue', 'police', 17, '⬤', 0 WHERE tags?'amenity' AND tags->'amenity' = 'police' UNION ALL
             SELECT 'safety', 'rescue', 'fire_station', 15, '⬤', 0 WHERE tags?'amenity' AND tags->'amenity' = 'fire_station' UNION ALL
@@ -85,7 +84,7 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'mobility', 'motorway', 'taxi', 16, '◯', 70 WHERE tags?'amenity' AND tags->'amenity' = 'taxi' UNION ALL
             SELECT 'mobility', 'motorway', 'motorway_junction', 13, '•', 70 WHERE tags?'highway' AND tags->'highway' = 'motorway_junction' AND (tags?'ref' AND tags->'ref' != 'no') UNION ALL
             SELECT 'mobility', 'motorway', 'toll_booth', 13, '•', 70 WHERE tags?'barrier' AND tags->'barrier' = 'toll_booth' UNION ALL
-            SELECT 'mobility', 'aeroway', 'aerodrome', 12, '⬤', 0 WHERE tags?'aeroway' AND tags->'aeroway' = 'aerodrome' AND tags->'aerodrome' = 'international' UNION ALL
+            SELECT 'mobility', 'aeroway', 'aerodrome', 12, '⬤', 0 WHERE tags?'aeroway' AND tags->'aeroway' = 'aerodrome' AND tags->'aerodrome' IN ('international') UNION ALL
             SELECT 'mobility', 'waterway', 'ferry_terminal', 13, '⬤', 60 WHERE tags?'amenity' AND tags->'amenity' = 'ferry_terminal' UNION ALL
             SELECT 'mobility', 'waterway', 'dock', 19, '•', 60 WHERE tags?'waterway' AND tags->'waterway' = 'dock' UNION ALL
             SELECT 'mobility', 'bicycle', 'bicycle', 16, '⬤', 200 WHERE tags?'shop' AND tags->'shop' = 'bicycle' AND (tags?'service:bicycle:rental' AND tags->'service:bicycle:rental' != 'no') UNION ALL
@@ -99,10 +98,10 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'amenity', 'stile', NULL, 18, '•', 1000 WHERE tags?'barrier' AND tags->'barrier' = 'stile' UNION ALL
             SELECT 'amenity', 'information', 'post_box', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'post_box' UNION ALL
             SELECT 'amenity', 'information', 'telephone', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'telephone' UNION ALL
-            SELECT 'amenity', 'information', 'information', 14, '•', 300 WHERE tags?'tourism' AND tags->'tourism' = 'information' AND tags->'information:board' = 'map' UNION ALL
+            SELECT 'amenity', 'information', 'information', 14, '•', 300 WHERE tags?'tourism' AND tags->'tourism' = 'information' AND tags->'information:board' IN ('map') UNION ALL
             SELECT 'amenity', 'sanitary', 'shower', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'shower' UNION ALL
             SELECT 'amenity', 'sanitary', 'drinking_water', 16, '◯', 300 WHERE tags?'amenity' AND tags->'amenity' = 'drinking_water' UNION ALL
-            SELECT 'amenity', 'sanitary', 'toilets', 16, '◯', 300 WHERE tags?'amenity' AND tags->'amenity' = 'toilets' AND (tags?'access' AND tags->'access' NOT IN ('no', 'private')) UNION ALL
+            SELECT 'amenity', 'sanitary', 'toilets', 16, '◯', 300 WHERE tags?'amenity' AND tags->'amenity' = 'toilets' AND (NOT tags?'access' OR tags->'access' NOT IN ('no', 'private')) UNION ALL
             SELECT 'amenity', 'picnic', 'picnic_site', 16, '⬤', 300 WHERE tags?'tourism' AND tags->'tourism' = 'picnic_site' UNION ALL
             SELECT 'amenity', 'picnic', 'picnic_table', 18, '•', 1000 WHERE tags?'leisure' AND tags->'leisure' = 'picnic_table' UNION ALL
             SELECT 'amenity', 'picnic', 'firepit', 18, '•', 1000 WHERE tags?'leisure' AND tags->'leisure' = 'firepit' UNION ALL
@@ -110,12 +109,12 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'amenity', 'hut', 'alpine_hut', 16, '⬤', 100 WHERE tags?'tourism' AND tags->'tourism' = 'alpine_hut' UNION ALL
             SELECT 'amenity', 'hut', 'wilderness_hut', 16, '⬤', 100 WHERE tags?'tourism' AND tags->'tourism' = 'wilderness_hut' UNION ALL
             SELECT 'amenity', 'hut', 'shelter', 17, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'shelter' UNION ALL
-            SELECT 'amenity', 'waste', 'centre', 15, '⬤', 300 WHERE tags?'recycling_type' AND tags->'recycling_type' = 'centre' AND tags->'amenity' = 'recycling' UNION ALL
-            SELECT 'amenity', 'waste', 'container', 17, '•', 800 WHERE tags?'recycling_type' AND tags->'recycling_type' = 'container' AND tags->'amenity' = 'recycling' UNION ALL
+            SELECT 'amenity', 'waste', 'centre', 15, '⬤', 300 WHERE tags?'recycling_type' AND tags->'recycling_type' = 'centre' AND tags->'amenity' IN ('recycling') UNION ALL
+            SELECT 'amenity', 'waste', 'container', 17, '•', 800 WHERE tags?'recycling_type' AND tags->'recycling_type' = 'container' AND tags->'amenity' IN ('recycling') UNION ALL
             SELECT 'amenity', 'waste', 'waste_disposal', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'waste_disposal' UNION ALL
             SELECT 'amenity', 'waste', 'waste_basket', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'waste_basket' UNION ALL
-            SELECT 'amenity', 'waste', 'vending_machine', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'vending_machine' AND tags->'vending' = 'excrement_bags' UNION ALL
-            SELECT 'amenity', 'waste', 'dog_excrement', 18, '•', 1000 WHERE tags?'waste' AND tags->'waste' = 'dog_excrement' AND tags->'amenity' = 'waste_basket' UNION ALL
+            SELECT 'amenity', 'waste', 'vending_machine', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'vending_machine' AND tags->'vending' IN ('excrement_bags') UNION ALL
+            SELECT 'amenity', 'waste', 'dog_excrement', 18, '•', 1000 WHERE tags?'waste' AND tags->'waste' = 'dog_excrement' AND tags->'amenity' IN ('waste_basket') UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'attraction', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'attraction' UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'aquarium', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'aquarium' UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'theme_park', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'theme_park' UNION ALL
@@ -124,9 +123,11 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'remarkable', 'attraction_activity', 'viewpoint', 14, '⬤', 100 WHERE tags?'tourism' AND tags->'tourism' = 'viewpoint' UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'lighthouse', 13, '⬤', 30 WHERE tags?'man_made' AND tags->'man_made' = 'lighthouse' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'lighthouse', 17, '•', 500 WHERE tags?'man_made' AND tags->'man_made' = 'lighthouse' UNION ALL
+            SELECT 'remarkable', 'attraction_activity', 'cave_entrance', 13, '•', 100 WHERE tags?'natural' AND tags->'natural' = 'cave_entrance' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
+            SELECT 'remarkable', 'attraction_activity', 'waterfall', 13, '⬤', 100 WHERE tags?'waterway' AND tags->'waterway' = 'waterfall' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
+            SELECT 'remarkable', 'attraction_activity', 'spring', 17, '•', 500 WHERE tags?'natural' AND tags->'natural' = 'spring' UNION ALL
             SELECT 'remarkable', 'natural_activity', 'beach_resort', 18, '⬤', 0 WHERE tags?'leisure' AND tags->'leisure' = 'beach_resort' UNION ALL
             SELECT 'remarkable', 'natural_activity', 'beach', 16, '⬤', 0 WHERE tags?'natural' AND tags->'natural' = 'beach' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
-            SELECT 'remarkable', 'natural_activity', 'peak', 12, '•', 0 WHERE tags?'natural' AND tags->'natural' = 'peak' UNION ALL
             SELECT 'remarkable', 'outdoor_activity', 'swimming_area', 14, '⬤', 0 WHERE tags?'leisure' AND tags->'leisure' = 'swimming_area' UNION ALL
             SELECT 'remarkable', 'outdoor_activity', 'winter_sports', 14, '⬤', 0 WHERE tags?'landuse' AND tags->'landuse' = 'winter_sports' UNION ALL
             SELECT 'remarkable', 'outdoor_activity', 'marina', 14, '⬤', 0 WHERE tags?'leisure' AND tags->'leisure' = 'marina' UNION ALL
@@ -142,7 +143,7 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'culture', 'historic', 'castle', 14, '⬤', 30 WHERE tags?'historic' AND tags->'historic' = 'castle' UNION ALL
             SELECT 'culture', 'historic', 'monument', 14, '⬤', 30 WHERE tags?'historic' AND tags->'historic' = 'monument' UNION ALL
             SELECT 'culture', 'historic', 'memorial', 18, '•', 800 WHERE tags?'historic' AND tags->'historic' = 'memorial' UNION ALL
-            SELECT 'culture', 'historic', 'archaeological_site', 14, '⬤', 30 WHERE tags?'historic' AND tags->'historic' = 'archaeological_site' UNION ALL
+            SELECT 'culture', 'historic', 'archaeological_site', 14, '•', 30 WHERE tags?'historic' AND tags->'historic' = 'archaeological_site' UNION ALL
             SELECT 'culture', 'historic', 'castle_wall', 14, '•', 800 WHERE tags?'historic' AND tags->'historic' = 'castle_wall' UNION ALL
             SELECT 'culture', 'historic', 'city_wall', 14, '•', 800 WHERE tags?'barrier' AND tags->'barrier' = 'city_wall' UNION ALL
             SELECT 'culture', 'historic', 'church', 14, '•', 800 WHERE tags?'historic' AND tags->'historic' = 'church' UNION ALL
@@ -173,22 +174,23 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'leisure', 'community_centre', NULL, 17, '•', 200 WHERE tags?'amenity' AND tags->'amenity' = 'community_centre' UNION ALL
             SELECT 'leisure', 'nightclub', NULL, 17, '⬤', 200 WHERE tags?'amenity' AND tags->'amenity' = 'nightclub' UNION ALL
             SELECT 'leisure', 'swimming_pool', NULL, 14, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'swimming_pool' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
-            SELECT 'leisure', 'swimming', NULL, 14, '⬤', 200 WHERE tags?'sport' AND tags->'sport' = 'swimming' AND tags->'leisure' = 'sports_centre' UNION ALL
+            SELECT 'leisure', 'swimming', NULL, 14, '⬤', 200 WHERE tags?'sport' AND tags->'sport' = 'swimming' AND tags->'leisure' IN ('sports_centre') UNION ALL
+            SELECT 'leisure', 'public_bath', NULL, 14, '⬤', 200 WHERE tags?'amenity' AND tags->'amenity' = 'public_bath' AND tags->'bath:type' IN ('thermal') UNION ALL
             SELECT 'leisure', 'golf_course', NULL, 14, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'golf_course' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
             SELECT 'leisure', 'golf_course', NULL, 16, '•', 300 WHERE tags?'leisure' AND tags->'leisure' = 'golf_course' UNION ALL
-            SELECT 'leisure', 'ice_ring', NULL, 15, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'ice_ring' UNION ALL
+            SELECT 'leisure', 'ice_rink', NULL, 15, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'ice_rink' UNION ALL
             SELECT 'leisure', 'horse_riding', NULL, 14, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'horse_riding' UNION ALL
             SELECT 'leisure', 'miniature_golf', NULL, 16, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'miniature_golf' UNION ALL
             SELECT 'leisure', 'pitch', NULL, 17, '•', 501 WHERE tags?'leisure' AND tags->'leisure' = 'pitch' UNION ALL
-            SELECT 'leisure', 'sports_centre', NULL, 14, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'sports_centre' UNION ALL
+            SELECT 'leisure', 'sports_centre', NULL, 14, '⬤', 201 WHERE tags?'leisure' AND tags->'leisure' = 'sports_centre' UNION ALL
             SELECT 'leisure', 'bowling_alley', NULL, 14, '⬤', 200 WHERE tags?'leisure' AND tags->'leisure' = 'bowling_alley' UNION ALL
             SELECT 'leisure', 'fitness_centre', NULL, 16, '•', 500 WHERE tags?'leisure' AND tags->'leisure' = 'fitness_centre' UNION ALL
-            SELECT 'leisure', 'pelota', NULL, 16, '⬤', 300 WHERE tags?'sport' AND tags->'sport' = 'pelota' AND tags->'leisure' = 'pitch' UNION ALL
+            SELECT 'leisure', 'pelota', NULL, 14, '⬤', 200 WHERE tags?'sport' AND tags->'sport' = 'pelota' AND tags->'leisure' IN ('sports_centre') UNION ALL
             SELECT 'leisure', 'park', 'garden', 18, '•', 500 WHERE tags?'leisure' AND tags->'leisure' = 'garden' UNION ALL
             SELECT 'leisure', 'park', 'park', 16, '⬤', 100 WHERE tags?'leisure' AND tags->'leisure' = 'park' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
             SELECT 'leisure', 'hide', 'wildlife_hide', 17, '•', 100 WHERE tags?'leisure' AND tags->'leisure' = 'wildlife_hide' UNION ALL
             SELECT 'leisure', 'hide', 'bird_hide', 17, '•', 100 WHERE tags?'leisure' AND tags->'leisure' = 'bird_hide' UNION ALL
-            SELECT 'leisure', 'hide', 'tower', 17, '•', 100 WHERE tags?'man_made' AND tags->'man_made' = 'tower' AND tags->'tower:type' = 'observation' UNION ALL
+            SELECT 'leisure', 'hide', 'tower', 17, '•', 100 WHERE tags?'man_made' AND tags->'man_made' = 'tower' AND tags->'tower:type' IN ('observation') UNION ALL
             SELECT 'leisure', 'sport', 'athletics', 17, '•', 500 WHERE tags?'sport' AND tags->'sport' = 'athletics' UNION ALL
             SELECT 'leisure', 'sport', 'badminton', 17, '•', 500 WHERE tags?'sport' AND tags->'sport' = 'badminton' UNION ALL
             SELECT 'leisure', 'sport', 'basketball', 17, '•', 500 WHERE tags?'sport' AND tags->'sport' = 'basketball' UNION ALL
@@ -243,7 +245,7 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'public_landmark', 'grave_yard', NULL, 14, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'grave_yard' UNION ALL
             SELECT 'public_landmark', 'cemetery', NULL, 14, '•', 100 WHERE tags?'landuse' AND tags->'landuse' = 'cemetery' UNION ALL
             SELECT 'public_landmark', 'library', NULL, 16, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'library' UNION ALL
-            SELECT 'public_landmark', 'kindergarten', NULL, 16, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'kindergarten' AND tags->'school:FR' = 'maternelle' UNION ALL
+            SELECT 'public_landmark', 'kindergarten', NULL, 16, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'kindergarten' AND tags->'school:FR' IN ('maternelle') UNION ALL
             SELECT 'public_landmark', 'school', NULL, 16, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'school' UNION ALL
             SELECT 'public_landmark', 'college', NULL, 16, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'college' UNION ALL
             SELECT 'public_landmark', 'university', NULL, 14, '•', 100 WHERE tags?'amenity' AND tags->'amenity' = 'university' UNION ALL
@@ -251,6 +253,7 @@ CREATE OR REPLACE FUNCTION teritorio_poi_class(key TEXT, value TEXT, tags hstore
             SELECT 'public_landmark', 'mall', NULL, 14, '•', 100 WHERE tags?'shop' AND tags->'shop' = 'mall' UNION ALL
             SELECT 'public_landmark', 'border_control', NULL, 16, '•', 100 WHERE tags?'barrier' AND tags->'barrier' = 'border_control' UNION ALL
             SELECT 'public_landmark', 'brownfield', NULL, 14, '•', 100 WHERE tags?'landuse' AND tags->'landuse' = 'brownfield' UNION ALL
+            SELECT 'public_landmark', 'yes', NULL, 13, '•', 100 WHERE tags?'mountain_pass' AND tags->'mountain_pass' = 'yes' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
             SELECT 'shopping', 'sport_supply', 'bicycle', 16, '⬤', 500 WHERE tags?'shop' AND tags->'shop' = 'bicycle' UNION ALL
             SELECT 'shopping', 'sport_supply', 'outdoor', 16, '⬤', 500 WHERE tags?'shop' AND tags->'shop' = 'outdoor' UNION ALL
             SELECT 'shopping', 'feed', 'coffee', 18, '⬤', 400 WHERE tags?'shop' AND tags->'shop' = 'coffee' UNION ALL
