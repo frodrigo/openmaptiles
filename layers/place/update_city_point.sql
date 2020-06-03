@@ -66,10 +66,14 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION place_city.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh place_city rank';
     PERFORM update_osm_city_point();
     DELETE FROM place_city.updates;
+
+    RAISE LOG 'Refresh place_city rank done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

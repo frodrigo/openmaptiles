@@ -58,10 +58,14 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION place_state.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh place_state rank';
     PERFORM update_osm_state_point();
     DELETE FROM place_state.updates;
+
+    RAISE LOG 'Refresh place_state rank done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

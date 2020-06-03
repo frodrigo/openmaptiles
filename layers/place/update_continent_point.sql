@@ -27,10 +27,14 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION place_continent_point.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh place_continent_point';
     PERFORM update_osm_continent_point();
     DELETE FROM place_continent_point.updates;
+
+    RAISE LOG 'Refresh place_continent_point done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

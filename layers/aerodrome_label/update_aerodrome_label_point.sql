@@ -30,10 +30,14 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION aerodrome_label.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh aerodrome_label';
     PERFORM update_aerodrome_label_point();
     DELETE FROM aerodrome_label.updates;
+
+    RAISE LOG 'Refresh aerodrome_label done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

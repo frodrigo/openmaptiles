@@ -30,10 +30,14 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION place_island_polygon.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh place_island_polygon';
     PERFORM update_osm_island_polygon();
     DELETE FROM place_island_polygon.updates;
+
+    RAISE LOG 'Refresh place_island_polygon done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

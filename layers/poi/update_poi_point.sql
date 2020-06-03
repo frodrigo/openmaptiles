@@ -60,6 +60,8 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION poi_point.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh poi_point';
     PERFORM update_osm_poi_point();
@@ -67,6 +69,8 @@ CREATE OR REPLACE FUNCTION poi_point.refresh() RETURNS trigger AS
     REFRESH MATERIALIZED VIEW CONCURRENTLY osm_poi_stop_rank;
     PERFORM update_osm_poi_point_agg();
     DELETE FROM poi_point.updates;
+
+    RAISE LOG 'Refresh poi_point done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

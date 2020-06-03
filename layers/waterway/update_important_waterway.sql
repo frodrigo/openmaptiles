@@ -102,6 +102,8 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION waterway_important.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh waterway';
 
@@ -169,6 +171,8 @@ CREATE OR REPLACE FUNCTION waterway_important.refresh() RETURNS trigger AS
 
     DELETE FROM waterway_important.changes;
     DELETE FROM waterway_important.updates;
+
+    RAISE LOG 'Refresh waterway done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

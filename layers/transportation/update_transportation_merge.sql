@@ -123,6 +123,8 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION transportation.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE NOTICE 'Refresh transportation';
     -- REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring;
@@ -132,6 +134,8 @@ CREATE OR REPLACE FUNCTION transportation.refresh() RETURNS trigger AS
     -- REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen6;
     -- REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen7;
     DELETE FROM transportation.updates;
+
+    RAISE LOG 'Refresh transportation done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

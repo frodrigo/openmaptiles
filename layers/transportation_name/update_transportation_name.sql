@@ -186,6 +186,8 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION transportation_name.refresh_network() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh transportation_name_network';
     PERFORM update_osm_route_member();
@@ -230,6 +232,8 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh_network() RETURNS trigger
 
     DELETE FROM transportation_name.network_changes;
     DELETE FROM transportation_name.updates_network;
+
+    RAISE LOG 'Refresh transportation_name_network done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$
@@ -307,6 +311,8 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION transportation_name.refresh_name() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh transportation_name';
 
@@ -496,6 +502,8 @@ CREATE OR REPLACE FUNCTION transportation_name.refresh_name() RETURNS trigger AS
 
     DELETE FROM transportation_name.name_changes;
     DELETE FROM transportation_name.updates_name;
+
+    RAISE LOG 'Refresh transportation_name done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$

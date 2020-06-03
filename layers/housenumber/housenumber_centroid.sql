@@ -30,10 +30,14 @@ $$ language plpgsql;
 
 CREATE OR REPLACE FUNCTION housenumber.refresh() RETURNS trigger AS
   $BODY$
+  DECLARE
+    t timestamp with time zone := clock_timestamp();
   BEGIN
     RAISE LOG 'Refresh housenumber';
     PERFORM convert_housenumber_point();
     DELETE FROM housenumber.updates;
+
+    RAISE LOG 'Refresh housenumber done in %', age(clock_timestamp(), t);
     RETURN null;
   END;
   $BODY$
