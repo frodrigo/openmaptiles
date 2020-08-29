@@ -3,7 +3,7 @@
 -- etldoc:     label="layer_poi | <z12> z12 | <z13> z13 | <z14_> z14+" ] ;
 
 CREATE OR REPLACE FUNCTION layer_poi(bbox geometry, zoom_level integer, pixel_width numeric)
-RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, tourism_superclass text, tourism_class text, tourism_subclass text, tourism_zoom integer, tourism_style text, agg_stop integer, layer integer, level integer, indoor integer, tourism_rank int) AS $$
+RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de text, tags hstore, tourism_superclass text, tourism_class text, tourism_subclass text, tourism_zoom integer, tourism_priority integer, tourism_style text, agg_stop integer, layer integer, level integer, indoor integer, tourism_rank int) AS $$
     SELECT osm_id_hash AS osm_id, geometry, NULLIF(name, '') AS name,
         COALESCE(NULLIF(name_en, ''), name) AS name_en,
         COALESCE(NULLIF(name_de, ''), name, name_en) AS name_de,
@@ -12,6 +12,7 @@ RETURNS TABLE(osm_id bigint, geometry geometry, name text, name_en text, name_de
         (teritorio_poi_class(mapping_key, subclass, tags)).class AS tourism_class,
         (teritorio_poi_class(mapping_key, subclass, tags)).subclass AS tourism_subclass,
         (teritorio_poi_class(mapping_key, subclass, tags)).zoom AS tourism_zoom,
+        (teritorio_poi_class(mapping_key, subclass, tags)).priority AS tourism_priority,
         (teritorio_poi_class(mapping_key, subclass, tags)).style AS tourism_style,
 --        CASE
 --            WHEN subclass = 'information'
