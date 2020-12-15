@@ -191,7 +191,31 @@ whens = csv.collect{ |row|
     }.join(' AND ')
   end
 
-  "            SELECT #{_superclass}, #{_class}, #{_subclass}, #{_zoom}, #{_style}, #{_priority} WHERE tags?'#{row['key']}' AND tags->'#{row['key']}' = '#{row['value']}'#{extra_tags}"
+  if _superclass == "'remarkable'" && _class == "'attraction_activity'" && _subclass == "'attraction'"
+    "(SELECT
+  #{_superclass}, #{_class}, #{_subclass},
+  CASE
+    WHEN score >= 11 THEN 13
+    WHEN score >= 5 THEN 14
+    ELSE 17
+  END AS zoom,
+  '⬤' AS style,
+  CASE
+    WHEN score >= 11 THEN 0
+    WHEN score >= 8 THEN 50
+    ELSE 100
+  END AS priority
+FROM (
+  SELECT
+    CASE tags->'heritage' WHEN '1' THEN 10 WHEN '2' THEN 5 WHEN '3' THEN 2 ELSE 1 END +
+    CASE WHEN tags ?& ARRAY['wikipedia', 'wikidata'] THEN 5 ELSE 0 END +
+    CASE WHEN tags?'name' THEN 1 ELSE 0 END +
+    CASE WHEN tags ?& ARRAY['website', 'phone', 'email', 'opening_hours'] THEN 1 ELSE 0 END AS score
+  WHERE tags?'#{row['key']}' AND tags->'#{row['key']}' = '#{row['value']}'#{extra_tags}
+) AS score)"
+  else
+    "            SELECT #{_superclass}, #{_class}, #{_subclass}, #{_zoom}, #{_style}, #{_priority} WHERE tags?'#{row['key']}' AND tags->'#{row['key']}' = '#{row['value']}'#{extra_tags}"
+  end
 }.join(" UNION ALL\n")
 
 file = File.open('class-teritorio.sql', 'w')
