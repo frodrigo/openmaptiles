@@ -114,12 +114,32 @@ CREATE OR REPLACE FUNCTION poi_tourism_class(key TEXT, value TEXT, tags hstore) 
             SELECT 'amenity', 'waste', 'waste_basket', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'waste_basket' UNION ALL
             SELECT 'amenity', 'waste', 'vending_machine', 18, '•', 1000 WHERE tags?'amenity' AND tags->'amenity' = 'vending_machine' AND tags->'vending' IN ('excrement_bags') UNION ALL
             SELECT 'amenity', 'waste', 'dog_excrement', 18, '•', 1000 WHERE tags?'waste' AND tags->'waste' = 'dog_excrement' AND tags->'amenity' IN ('waste_basket') UNION ALL
-            SELECT 'remarkable', 'attraction_activity', 'attraction', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'attraction' UNION ALL
+(SELECT
+  'remarkable', 'attraction_activity', 'attraction',
+  CASE
+    WHEN score >= 11 THEN 13
+    WHEN score >= 5 THEN 14
+    ELSE 17
+  END AS zoom,
+  '⬤' AS style,
+  CASE
+    WHEN score >= 11 THEN 0
+    WHEN score >= 8 THEN 50
+    ELSE 100
+  END AS priority
+FROM (
+  SELECT
+    CASE tags->'heritage' WHEN '1' THEN 10 WHEN '2' THEN 5 WHEN '3' THEN 2 ELSE 1 END +
+    CASE WHEN tags ?& ARRAY['wikipedia', 'wikidata'] THEN 5 ELSE 0 END +
+    CASE WHEN tags?'name' THEN 1 ELSE 0 END +
+    CASE WHEN tags ?& ARRAY['website', 'phone', 'email', 'opening_hours'] THEN 1 ELSE 0 END AS score
+  WHERE tags?'tourism' AND tags->'tourism' = 'attraction'
+) AS score) UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'aquarium', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'aquarium' UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'theme_park', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'theme_park' UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'water_park', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'water_park' UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'zoo', 13, '⬤', 0 WHERE tags?'tourism' AND tags->'tourism' = 'zoo' UNION ALL
-            SELECT 'remarkable', 'attraction_activity', 'viewpoint', 14, '⬤', 100 WHERE tags?'tourism' AND tags->'tourism' = 'viewpoint' UNION ALL
+            SELECT 'remarkable', 'attraction_activity', 'viewpoint', 14, '⬤', 100 WHERE tags?'tourism' AND tags->'tourism' = 'viewpoint' AND (tags?'description' AND tags->'description' != 'no') UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'lighthouse', 13, '⬤', 30 WHERE tags?'man_made' AND tags->'man_made' = 'lighthouse' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'lighthouse', 17, '•', 500 WHERE tags?'man_made' AND tags->'man_made' = 'lighthouse' UNION ALL
             SELECT 'remarkable', 'attraction_activity', 'cave_entrance', 13, '•', 100 WHERE tags?'natural' AND tags->'natural' = 'cave_entrance' AND (tags?'name' AND tags->'name' != 'no') UNION ALL
