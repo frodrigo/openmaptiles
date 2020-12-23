@@ -39,7 +39,7 @@ CREATE OR REPLACE FUNCTION poi_tourism_class(key TEXT, value TEXT, tags hstore) 
             SELECT 'convenience', 'sports', NULL, 18, '⬤', 600 WHERE tags?'shop' AND tags->'shop' = 'sports' UNION ALL
             SELECT 'convenience', 'butcher', NULL, 18, '⬤', 600 WHERE tags?'shop' AND tags->'shop' = 'butcher' UNION ALL
             SELECT 'convenience', 'hairdresser', NULL, 18, '⬤', 600 WHERE tags?'shop' AND tags->'shop' = 'hairdresser' UNION ALL
-            SELECT 'convenience', 'seefood', NULL, 18, '⬤', 600 WHERE tags?'shop' AND tags->'shop' = 'seefood' UNION ALL
+            SELECT 'convenience', 'seafood', NULL, 18, '⬤', 600 WHERE tags?'shop' AND tags->'shop' = 'seafood' UNION ALL
             SELECT 'convenience', 'florist', NULL, 18, '⬤', 600 WHERE tags?'shop' AND tags->'shop' = 'florist' UNION ALL
             SELECT 'services', 'bank', NULL, 17, '⬤', 700 WHERE tags?'amenity' AND tags->'amenity' = 'bank' UNION ALL
             SELECT 'services', 'atm', NULL, 18, '•', 700 WHERE tags?'amenity' AND tags->'amenity' = 'atm' UNION ALL
