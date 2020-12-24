@@ -14,14 +14,14 @@ layer:
       POI.
     name_en: English name `name:en` if available, otherwise `name`.
     name_de: German name `name:de` if available, otherwise `name` or `name:en`.
-    tourism_superclass: 
-    tourism_class:
+    superclass: 
+    class:
       description: |
         More general classes of POIs. If there is no more general `class` for the `subclass`
         this field will contain the same value as `subclass`.
         But for example for schools you only need to style the class `school` to filter the subclasses `school`
         and `kindergarten`. Or use the class `shop` to style all shops.
-    tourism_subclass:
+    subclass:
       description: |
         Original value of either the
         [`amenity`](http://wiki.openstreetmap.org/wiki/Key:amenity),
@@ -41,9 +41,9 @@ layer:
         [`highway`](http://wiki.openstreetmap.org/wiki/Key:highway)
         or [`waterway`](http://wiki.openstreetmap.org/wiki/Key:waterway)
         tag.  Use this to do more precise styling.
-    tourism_zoom: 
-    tourism_priority: 
-    tourism_style: 
+    zoom: 
+    priority: 
+    style: 
     agg_stop:
       description: |
         Experimental feature! Indicates main platform of public transport
@@ -70,7 +70,7 @@ layer:
 '
       values:
       - 1
-    tourism_rank: |
+    rank: |
       The POIs are ranked ascending according to their importance within a grid. The `rank` value shows the
       local relative importance of a POI within it's cell in the grid. This can be used to reduce label density at *z14*.
       Since all POIs already need to be contained at *z14* you can use `less than rank=10` epxression to limit
@@ -147,16 +147,15 @@ layer:
     key_field_as_attribute: false
     srid: 900913
     query: (SELECT osm_id, osm_id AS id, geometry, name, name_en, name_de, {name_languages},
-      tourism_superclass, tourism_class, tourism_subclass, tourism_zoom, tourism_priority,
-      tourism_style, agg_stop, layer, level, indoor, tourism_rank, tags->'local_name'
-      AS "local_name", tags->'alt_name' AS "alt_name", tags->'contact:phone' AS "contact:phone",
-      tags->'contact:mobile' AS "contact:mobile", tags->'contact:fax' AS "contact:fax",
-      tags->'contact:website' AS "contact:website", tags->'contact:email' AS "contact:email",
-      tags->'contact:facebook' AS "contact:facebook", tags->'phone' AS "phone", tags->'fax'
-      AS "fax", tags->'email' AS "email", tags->'website' AS "website", tags->'adress'
-      AS "adress", tags->'addr:housenumber' AS "addr:housenumber", tags->'addr:housename'
-      AS "addr:housename", tags->'addr:flats' AS "addr:flats", tags->'addr:street'
-      AS "addr:street", tags->'addr:place' AS "addr:place", tags->'addr:postcode'
+      superclass, class, subclass, zoom, priority, style, agg_stop, layer, level,
+      indoor, rank, tags->'local_name' AS "local_name", tags->'alt_name' AS "alt_name",
+      tags->'contact:phone' AS "contact:phone", tags->'contact:mobile' AS "contact:mobile",
+      tags->'contact:fax' AS "contact:fax", tags->'contact:website' AS "contact:website",
+      tags->'contact:email' AS "contact:email", tags->'contact:facebook' AS "contact:facebook",
+      tags->'phone' AS "phone", tags->'fax' AS "fax", tags->'email' AS "email", tags->'website'
+      AS "website", tags->'adress' AS "adress", tags->'addr:housenumber' AS "addr:housenumber",
+      tags->'addr:housename' AS "addr:housename", tags->'addr:flats' AS "addr:flats",
+      tags->'addr:street' AS "addr:street", tags->'addr:place' AS "addr:place", tags->'addr:postcode'
       AS "addr:postcode", tags->'addr:city' AS "addr:city", tags->'addr:country' AS
       "addr:country", tags->'ref:FR:CRTA' AS "ref:FR:CRTA", tags->'opening_hours'
       AS "opening_hours", tags->'wheelchair' AS "wheelchair", tags->'acces' AS "acces",
