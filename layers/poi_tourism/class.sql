@@ -1,3 +1,4 @@
+
 CREATE OR REPLACE FUNCTION poi_tourism_class(key TEXT, value TEXT, tags hstore) RETURNS TABLE (
     superclass TEXT,
     class TEXT,
