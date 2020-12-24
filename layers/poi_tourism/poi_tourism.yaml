@@ -9,7 +9,6 @@ layer:
   srs: "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0
     +k=1.0 +units=m +nadgrids=@null +wktext +no_defs +over"
   fields:
-    id: ID derived from OSM
     name: The OSM [`name`](http://wiki.openstreetmap.org/wiki/Key:name) value of the
       POI.
     name_en: English name `name:en` if available, otherwise `name`.
@@ -146,13 +145,13 @@ layer:
     key_field: osm_id
     key_field_as_attribute: false
     srid: 900913
-    query: (SELECT osm_id, osm_id AS id, geometry, name, name_en, name_de, {name_languages},
-      superclass, class, subclass, zoom, priority, style, agg_stop, layer, level,
-      indoor, rank, tags->'local_name' AS "local_name", tags->'alt_name' AS "alt_name",
-      tags->'contact:phone' AS "contact:phone", tags->'contact:mobile' AS "contact:mobile",
-      tags->'contact:fax' AS "contact:fax", tags->'contact:website' AS "contact:website",
-      tags->'contact:email' AS "contact:email", tags->'contact:facebook' AS "contact:facebook",
-      tags->'phone' AS "phone", tags->'fax' AS "fax", tags->'email' AS "email", tags->'website'
+    query: (SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, superclass,
+      class, subclass, zoom, priority, style, agg_stop, layer, level, indoor, rank,
+      tags->'local_name' AS "local_name", tags->'alt_name' AS "alt_name", tags->'contact:phone'
+      AS "contact:phone", tags->'contact:mobile' AS "contact:mobile", tags->'contact:fax'
+      AS "contact:fax", tags->'contact:website' AS "contact:website", tags->'contact:email'
+      AS "contact:email", tags->'contact:facebook' AS "contact:facebook", tags->'phone'
+      AS "phone", tags->'fax' AS "fax", tags->'email' AS "email", tags->'website'
       AS "website", tags->'adress' AS "adress", tags->'addr:housenumber' AS "addr:housenumber",
       tags->'addr:housename' AS "addr:housename", tags->'addr:flats' AS "addr:flats",
       tags->'addr:street' AS "addr:street", tags->'addr:place' AS "addr:place", tags->'addr:postcode'

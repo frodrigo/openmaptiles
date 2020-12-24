@@ -89,11 +89,11 @@ include_tags = "'#{include_tags}'" if include_tags.size > 0
 poi_yaml = File.open('poi_tourism.yaml').read()
 poi_yaml = YAML::load(poi_yaml)
 
-query = '(SELECT osm_id, osm_id AS id, geometry, name, name_en, name_de, {name_languages}, superclass, class, subclass, zoom, priority, style, agg_stop, layer, level, indoor, rank, {extra_attributes} FROM layer_poi_tourism(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t'
+query = '(SELECT osm_id, geometry, name, name_en, name_de, {name_languages}, superclass, class, subclass, zoom, priority, style, agg_stop, layer, level, indoor, rank, {extra_attributes} FROM layer_poi_tourism(!bbox!, z(!scale_denominator!), !pixel_width!)) AS t'
 query = query.gsub('{extra_attributes}', plus_tags.map{ |t| "tags->'#{t}' AS \"#{t}\"" }.join(', '))
 poi_yaml['layer']['datasource']['query'] = query
 
-keep_fields = %w[id geometry name name_en name_de superclass class subclass zoom priority style agg_stop layer level indoor rank]
+keep_fields = %w[geometry name name_en name_de superclass class subclass zoom priority style agg_stop layer level indoor rank]
 poi_yaml['layer']['fields'] = poi_yaml['layer']['fields'].slice(*keep_fields).merge(Hash[plus_tags.map{ |t| [t, nil] }])
 File.open('poi_tourism.yaml', 'w').write(YAML::dump(poi_yaml))
 
