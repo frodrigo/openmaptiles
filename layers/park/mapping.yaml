@@ -89,3 +89,7 @@ tables:
       boundary:
       - national_park
       - protected_area
+      protect_class: [__any__]
+    filters:
+      require:
+        protect_class: [none, '1a', '1b', '1', '2', '3', '4', '5', '6', '7', '97', '98', '12', '14', '15']

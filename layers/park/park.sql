@@ -27,7 +27,7 @@ FROM (
          SELECT osm_id,
                 geometry,
                 COALESCE(
-                        LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
+                        --LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
                         NULLIF(boundary, ''),
                         NULLIF(leisure, '')
                     ) AS class,
@@ -168,7 +168,7 @@ FROM (
          SELECT osm_id,
                 geometry_point AS geometry,
                 COALESCE(
-                        LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
+                        -- LOWER(REPLACE(NULLIF(protection_title, ''), ' ', '_')),
                         NULLIF(boundary, ''),
                         NULLIF(leisure, '')
                     ) AS class,
