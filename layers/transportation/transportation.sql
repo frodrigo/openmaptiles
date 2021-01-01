@@ -567,7 +567,7 @@ FROM (
                 NULL AS surface,
                 z_order
          FROM osm_aerialway_linestring_gen_z12
-         WHERE zoom_level = 12
+         WHERE zoom_level = 10
          UNION ALL
 
          -- etldoc: osm_aerialway_linestring ->  layer_transportation:z13
@@ -597,7 +597,7 @@ FROM (
                 NULL AS surface,
                 z_order
          FROM osm_aerialway_linestring
-         WHERE zoom_level >= 13
+         WHERE zoom_level >= 11
          UNION ALL
 
          -- etldoc: osm_shipway_linestring_gen_z11  ->  layer_transportation:z11
